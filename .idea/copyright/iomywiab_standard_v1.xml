@@ -1,0 +1,7 @@
+<component name="CopyrightManager">
+  <copyright>
+    <option name="keyword" value="@copyright" />
+    <option name="notice" value="This file is part of the &amp;#36;project.name package.&#10;&#10;Copyright (c) 2012-&amp;#36;today.year Patrick Nehls &lt;iomywiab@premium-postfach.de&gt;, Tornesch, Germany.&#10;&#10;For the full copyright and license information, please view the LICENSE&#10;file that was distributed with this source code.&#10;&#10;File name....: &amp;#36;file.fileName&#10;File path....: &amp;#36;file.pathName&#10;Class name...: &amp;#36;file.className&#10;Project name.: &amp;#36;project.name&#10;Module name..: &amp;#36;module.name&#10;Last modified: &amp;#36;file.lastModified.format(&quot;YYYY-MM-dd HH:mm:ss&quot;)" />
+    <option name="myName" value="iomywiab-standard-v1" />
+  </copyright>
+</component>
