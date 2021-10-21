@@ -1,8 +1,11 @@
 {
   "name": "iomywiab/iomywiab-php-constraints",
+  "type": "library",
   "description": "Generic constraints, mostly used for parameter checking",
+  "keywords": ["constraint", "validation", "check", "verification"],
+  "homepage": "https://github.com/iomywiab/iomywiab-php-constraints",
   "minimum-stability": "stable",
-  "license": "proprietary",
+  "license": "MIT",
   "authors": [
     {
       "name": "iomywiab",
