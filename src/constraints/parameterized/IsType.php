@@ -1,4 +1,6 @@
 <?php
+/** @noinspection PhpUnused */
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
@@ -132,4 +134,15 @@ class IsType extends AbstractConstraint
     {
         $this->type = unserialize($data);
     }
+
+    public function __serialize(): array
+    {
+        return [$this->type];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->type = $data[0];
+    }
+
 }

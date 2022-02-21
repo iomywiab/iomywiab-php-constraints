@@ -148,4 +148,15 @@ class IsInArray extends AbstractConstraint
         $this->strict = $tmpArray[1];
     }
 
+    public function __serialize(): array
+    {
+        return [$this->array, $this->strict];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->array = $data[0];
+        $this->strict = $data[1];
+    }
+
 }

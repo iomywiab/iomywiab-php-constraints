@@ -251,4 +251,16 @@ class IsUrl extends AbstractConstraint
         $this->ports = unserialize($items[self::SERIALIZE_PORTS]);
     }
 
+    public function __serialize(): array
+    {
+        return [$this->schemes, $this->hosts, $this->ports];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->schemes = $data[0];
+        $this->hosts = $data[1];
+        $this->ports = $data[2];
+    }
+
 }

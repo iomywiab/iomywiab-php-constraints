@@ -147,4 +147,16 @@ class IsInRange extends AbstractConstraint
         $this->minimum = $both[0];
         $this->maximum = $both[1];
     }
+
+    public function __serialize(): array
+    {
+        return [$this->minimum, $this->maximum];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->minimum = $data[0];
+        $this->maximum = $data[1];
+    }
+
 }

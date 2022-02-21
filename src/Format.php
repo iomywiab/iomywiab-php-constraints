@@ -13,6 +13,7 @@
  * Module name..: iomywiab-php-constraints
  * Last modified: 2021-10-20 18:30:00
  */
+/** @noinspection PhpUnused */
 
 declare(strict_types=1);
 

@@ -114,4 +114,14 @@ class IsResource extends AbstractConstraint
         $this->resourceType = unserialize($data);
     }
 
+    public function __serialize(): array
+    {
+        return [$this->resourceType];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->resourceType = $data[0];
+    }
+
 }

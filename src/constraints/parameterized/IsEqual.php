@@ -122,7 +122,7 @@ class IsEqual extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize([0 => $this->expected, 1 => $this->strict]);
+        return serialize([$this->expected, $this->strict]);
     }
 
     /**
@@ -133,5 +133,16 @@ class IsEqual extends AbstractConstraint
         $array = unserialize($data);
         $this->expected = $array[0];
         $this->strict = $array[1];
+    }
+
+    public function __serialize(): array
+    {
+        return [$this->expected, $this->strict];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->expected = $data[0];
+        $this->strict = $data[1];
     }
 }

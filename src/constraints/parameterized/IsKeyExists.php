@@ -109,4 +109,14 @@ class IsKeyExists extends AbstractConstraint
     {
         $this->array = unserialize($data);
     }
+
+    public function __serialize(): array
+    {
+        return [$this->array];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->array = $data[0];
+    }
 }

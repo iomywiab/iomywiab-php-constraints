@@ -170,4 +170,14 @@ class IsImplementingInterface extends AbstractConstraint
         $this->interfaceName = unserialize($data);
     }
 
+    public function __serialize(): array
+    {
+        return [$this->interfaceName];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->interfaceName = $data[0];
+    }
+
 }

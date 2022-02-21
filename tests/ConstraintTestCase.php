@@ -21,6 +21,7 @@ namespace iomywiab\iomywiab_php_constraints_tests;
 use Exception;
 use iomywiab\iomywiab_php_constraints\Format;
 use iomywiab\iomywiab_php_constraints\interfaces\ConstraintInterface;
+use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 
 
@@ -54,7 +55,7 @@ abstract class ConstraintTestCase extends TestCase
      * @param array               $expectedOk
      * @param array               $expectedBad
      * @param bool                $showProgress
-     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws ExpectationFailedException
      */
     public function checkConstraint(
         ConstraintInterface $constraint,

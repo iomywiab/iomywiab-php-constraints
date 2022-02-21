@@ -126,4 +126,14 @@ class IsTypeOfAny extends AbstractConstraint
     {
         $this->types = unserialize($data);
     }
+
+    public function __serialize(): array
+    {
+        return [$this->types];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->types = $data[0];
+    }
 }

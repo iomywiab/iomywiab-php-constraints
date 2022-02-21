@@ -122,4 +122,14 @@ class IsStringEndingWith extends AbstractConstraint
         $this->endString = unserialize($data);
     }
 
+    public function __serialize(): array
+    {
+        return [$this->endString];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->endString = $data[0];
+    }
+
 }

@@ -23,7 +23,9 @@ use Exception;
 use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsAOf;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
 use iomywiab\iomywiab_php_constraints_tests\ConstraintTestCase;
+use PHPUnit\Framework\ExpectationFailedException;
 use RuntimeException;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 /**
  * Class InstanceTest
@@ -32,9 +34,9 @@ use RuntimeException;
 class IsAOfTest extends ConstraintTestCase
 {
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws ConstraintViolationException
      */
     public function testIsValid(): void
     {

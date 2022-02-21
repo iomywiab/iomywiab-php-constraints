@@ -116,4 +116,14 @@ class IsStringStartingWith extends AbstractConstraint
         $this->prefix = unserialize($data);
     }
 
+    public function __serialize(): array
+    {
+        return [$this->prefix];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->prefix = $data[0];
+    }
+
 }

@@ -149,4 +149,15 @@ class IsTypeOrInstanceOfAny extends AbstractConstraint
         $this->types = $tmp[0];
         $this->classesAndInterfaces = $tmp[1];
     }
+
+    public function __serialize(): array
+    {
+        return [$this->types, $this->classesAndInterfaces];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->types = $data[0];
+        $this->classesAndInterfaces = $data[1];
+    }
 }

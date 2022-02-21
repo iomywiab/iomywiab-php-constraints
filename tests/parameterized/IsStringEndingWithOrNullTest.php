@@ -32,6 +32,8 @@ use Exception;
 use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsStringEndingWithOrNull;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
 use iomywiab\iomywiab_php_constraints_tests\ConstraintTestCase;
+use PHPUnit\Framework\ExpectationFailedException;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 /**
  * Class IsBoolStringTest
@@ -40,9 +42,9 @@ use iomywiab\iomywiab_php_constraints_tests\ConstraintTestCase;
 class IsStringEndingWithOrNullTest extends ConstraintTestCase
 {
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws ConstraintViolationException
      */
     public function testIsValid(): void
     {

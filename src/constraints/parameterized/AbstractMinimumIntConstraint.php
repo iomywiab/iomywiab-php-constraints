@@ -125,4 +125,15 @@ abstract class AbstractMinimumIntConstraint extends AbstractConstraint
     {
         $this->minimum = unserialize($data);
     }
+
+    public function __serialize(): array
+    {
+        return [$this->minimum];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->minimum = $data[0];
+    }
+
 }

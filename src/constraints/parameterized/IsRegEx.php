@@ -124,4 +124,14 @@ class IsRegEx extends AbstractConstraint
         $this->regEx = unserialize($data);
     }
 
+    public function __serialize(): array
+    {
+        return [$this->regEx];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->regEx = $data[0];
+    }
+
 }

@@ -50,4 +50,14 @@ abstract class AbstractConstraint implements ConstraintInterface
             . '. Got ' . Format::toDescription($value);
     }
 
+    public function __serialize(): array
+    {
+        return [];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        // no code
+    }
+
 }

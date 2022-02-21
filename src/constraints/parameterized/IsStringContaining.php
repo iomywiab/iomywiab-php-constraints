@@ -116,4 +116,14 @@ class IsStringContaining extends AbstractConstraint
         $this->subString = unserialize($data);
     }
 
+    public function __serialize(): array
+    {
+        return [$this->subString];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->subString = $data[0];
+    }
+
 }

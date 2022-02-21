@@ -37,6 +37,8 @@ use iomywiab\iomywiab_php_constraints\constraints\simple\IsUnsigned8;
 use iomywiab\iomywiab_php_constraints\constraints\simple\IsUnsigned8OrNull;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
 use iomywiab\iomywiab_php_constraints_tests\ConstraintTestCase;
+use PHPUnit\Framework\ExpectationFailedException;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 /**
  * Class ConstraintsTest
@@ -46,9 +48,9 @@ class IsParametersTest extends ConstraintTestCase
 {
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws ConstraintViolationException
      */
     public function testIsValid(): void
     {
@@ -88,9 +90,9 @@ class IsParametersTest extends ConstraintTestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws ConstraintViolationException
      */
     public function testInvalidValues(): void
     {
@@ -106,9 +108,9 @@ class IsParametersTest extends ConstraintTestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws ConstraintViolationException
      */
     public function testMissingMandatoryValues(): void
     {
@@ -134,7 +136,7 @@ class IsParametersTest extends ConstraintTestCase
     }
 
     /**
-     * @throws \iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException
+     * @throws ConstraintViolationException
      */
     public function testInvalidPatterns(): void
     {
@@ -147,7 +149,7 @@ class IsParametersTest extends ConstraintTestCase
     }
 
     /**
-     * @throws \iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException
+     * @throws ConstraintViolationException
      */
     public function testEmptyPattern(): void
     {
@@ -159,9 +161,9 @@ class IsParametersTest extends ConstraintTestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws ConstraintViolationException
      */
     public function testComplex(): void
     {
@@ -212,9 +214,9 @@ class IsParametersTest extends ConstraintTestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     * @throws ConstraintViolationException
      */
     public function testNotifier(): void
     {

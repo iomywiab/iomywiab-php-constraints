@@ -129,4 +129,16 @@ abstract class AbstractObjectOrClassnameConstraint extends AbstractConstraint
     {
         $this->objectOrClass = unserialize($data);
     }
+
+
+    public function __serialize(): array
+    {
+        return [$this->objectOrClass];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->objectOrClass = $data[0];
+    }
+
 }

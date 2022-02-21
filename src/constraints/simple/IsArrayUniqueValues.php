@@ -26,7 +26,6 @@ use iomywiab\iomywiab_php_constraints\Format;
  */
 class IsArrayUniqueValues extends AbstractSimpleConstraint
 {
-    // TODO implement strict
     /**
      * @inheritDoc
      */

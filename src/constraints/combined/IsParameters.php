@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpUnused */
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
@@ -294,6 +295,17 @@ class IsParameters extends AbstractConstraint
         $items = unserialize($data);
         $this->pattern = $items[0];
         $this->allowUnknownParameters = $items[1];
+    }
+
+    public function __serialize(): array
+    {
+        return [$this->pattern, $this->allowUnknownParameters];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->pattern = $data[0];
+        $this->allowUnknownParameters = $data[1];
     }
 
 }

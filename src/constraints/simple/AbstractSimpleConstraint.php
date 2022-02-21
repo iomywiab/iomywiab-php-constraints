@@ -71,4 +71,12 @@ abstract class AbstractSimpleConstraint extends AbstractConstraint implements Si
     {
         // no code
     }
+
+    public function __serialize(): array {
+        return [];
+    }
+
+    public function __unserialize(array $data): void {
+        // no code
+    }
 }

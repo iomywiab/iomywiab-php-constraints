@@ -21,7 +21,9 @@ namespace iomywiab\iomywiab_php_constraints_tests\simple;
 use Exception;
 use iomywiab\iomywiab_php_constraints\constraints\simple\IsSigned16;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
+use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 /**
  * Class MaximumTest
@@ -30,8 +32,8 @@ use PHPUnit\Framework\TestCase;
 class IsSigned16Test extends TestCase
 {
     /**
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
      */
     public function testIsValid(): void
     {

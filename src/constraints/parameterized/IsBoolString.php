@@ -156,5 +156,14 @@ class IsBoolString extends AbstractConstraint
         $this->lowercaseStrings = unserialize($data);
     }
 
+    public function __serialize(): array
+    {
+        return [$this->lowercaseStrings];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->lowercaseStrings = $data[0];
+    }
 
 }

@@ -139,4 +139,14 @@ class IsInstanceOfAny extends AbstractConstraint
         $this->classesAndInterfaces = unserialize($data);
     }
 
+    public function __serialize(): array
+    {
+        return [$this->classesAndInterfaces];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->classesAndInterfaces = $data[0];
+    }
+
 }

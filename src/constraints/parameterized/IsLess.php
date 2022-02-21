@@ -127,4 +127,14 @@ class IsLess extends AbstractConstraint
     {
         $this->maximum = unserialize($data);
     }
+
+    public function __serialize(): array
+    {
+        return [$this->maximum];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->maximum = $data[0];
+    }
 }
