@@ -18,8 +18,6 @@ declare(strict_types=1);
 
 namespace iomywiab\iomywiab_php_constraints_tests;
 
-require_once __DIR__ . '/test.php';
-
 use iomywiab\iomywiab_php_constraints\constraints\simple\IsArray;
 use iomywiab\iomywiab_php_constraints\Format;
 use PHPUnit\Framework\ExpectationFailedException;
