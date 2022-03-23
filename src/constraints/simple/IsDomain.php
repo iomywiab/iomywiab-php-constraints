@@ -31,7 +31,8 @@ class IsDomain extends AbstractSimpleConstraint
      */
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_string($value) && (1 == preg_match(self::REGEX, $value))) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_string($value) && (1 == \preg_match(self::REGEX, $value))) {
             return true;
         }
 

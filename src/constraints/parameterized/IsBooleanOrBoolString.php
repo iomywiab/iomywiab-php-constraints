@@ -39,17 +39,19 @@ class IsBooleanOrBoolString extends IsBoolString
         array $lowercaseStrings = self::DEFAULT_BOOLEAN_STRINGS,
         array &$errors = null
     ): bool {
-        if (is_bool($value) || parent::isValid($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_bool($value) || parent::isValid($value)) {
             return true;
         }
 
         if (null !== $errors) {
             $format = 'Boolean string or boolean expected. Valid string values=[%s]';
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
             $errors[] = self::toErrorMessage(
                 $value,
                 $valueName,
                 $format,
-                Format::toValueList(array_keys($lowercaseStrings))
+                Format::toValueList(\array_keys($lowercaseStrings))
             );
         }
         return false;

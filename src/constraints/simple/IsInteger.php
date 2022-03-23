@@ -34,9 +34,11 @@ class IsInteger extends AbstractSimpleConstraint
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
         $isValid = false;
-        if (is_numeric($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_numeric($value)) {
             $mustBeInt = ((PHP_INT_MIN <= $value) && ($value <= PHP_INT_MAX));
-            $isValid = ($mustBeInt ? is_int($value) : is_float($value))
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $isValid = ($mustBeInt ? \is_int($value) : \is_float($value))
                 && (static::MIN <= $value) && ($value <= static::MAX);
         }
 

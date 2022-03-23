@@ -93,8 +93,10 @@ class IsStringLengthBetween extends AbstractConstraint
         IsGreaterOrEqual::assert(0, $minimum);
         IsGreaterOrEqual::assert($minimum, $maximum);
 
-        if (is_string($value)) {
-            $len = strlen($value);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_string($value)) {
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $len = \strlen($value);
             if (($minimum <= $len) && ($len <= $maximum)) {
                 return true;
             }
@@ -141,7 +143,8 @@ class IsStringLengthBetween extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize([0 => $this->minimum, 1 => $this->maximum]);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize([0 => $this->minimum, 1 => $this->maximum]);
     }
 
     /**
@@ -149,7 +152,8 @@ class IsStringLengthBetween extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $both = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $both = \unserialize($data);
         $this->minimum = $both[0];
         $this->maximum = $both[1];
     }

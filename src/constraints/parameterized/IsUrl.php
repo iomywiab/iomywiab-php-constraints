@@ -26,6 +26,7 @@ use iomywiab\iomywiab_php_constraints\Format;
 
 /**
  * Class Url
+ *
  * @package iomywiab\iomywiab_php_constraints
  */
 class IsUrl extends AbstractConstraint
@@ -51,6 +52,7 @@ class IsUrl extends AbstractConstraint
 
     /**
      * Url constructor.
+     *
      * @param string[]|null $schemes
      * @param string[]|null $hosts
      * @param int[]|null    $ports
@@ -134,15 +136,20 @@ class IsUrl extends AbstractConstraint
         ?array $ports = null,
         array &$errors = null
     ): bool {
-        if (false !== filter_var($value, FILTER_VALIDATE_URL)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (false !== \filter_var($value, FILTER_VALIDATE_URL)) {
             $isValid = true;
             if (isset($schemes) || isset($hosts) || isset($ports)) {
-                $parts = parse_url($value);
-                if (isset($schemes) && isset($parts['scheme']) && !in_array($parts['scheme'], $schemes)) {
+                /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                $parts = \parse_url($value);
+                /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                if (isset($schemes) && isset($parts['scheme']) && !\in_array($parts['scheme'], $schemes)) {
                     $isValid = false;
-                } elseif (isset($hosts) && isset($parts['host']) && !in_array($parts['host'], $hosts)) {
+                } /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                elseif (isset($hosts) && isset($parts['host']) && !\in_array($parts['host'], $hosts)) {
                     $isValid = false;
-                } elseif (isset($ports) && isset($parts['port']) && !in_array($parts['port'], $ports)) {
+                } /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                elseif (isset($ports) && isset($parts['port']) && !\in_array($parts['port'], $ports)) {
                     $isValid = false;
                 }
             }
@@ -152,7 +159,8 @@ class IsUrl extends AbstractConstraint
         }
 
         if (null !== $errors) {
-            if (false === filter_var($value, FILTER_VALIDATE_URL)) {
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            if (false === \filter_var($value, FILTER_VALIDATE_URL)) {
                 $errors[] = self::toErrorMessage($value, $valueName, 'URL expected');
             } else {
                 self::addDetailErrors($value, $valueName, $schemes, $hosts, $ports, $errors);
@@ -179,16 +187,20 @@ class IsUrl extends AbstractConstraint
         ?array $ports,
         array &$errors
     ) {
-        $parts = parse_url($value);
-        if (isset($schemes) && isset($parts['scheme']) && !in_array($parts['scheme'], $schemes)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $parts = \parse_url($value);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (isset($schemes) && isset($parts['scheme']) && !\in_array($parts['scheme'], $schemes)) {
             $format = 'Scheme [%s] expected';
             $errors[] = self::toErrorMessage($value, $valueName, $format, Format::toValueList($schemes));
         }
-        if (isset($hosts) && isset($parts['host']) && !in_array($parts['host'], $hosts)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (isset($hosts) && isset($parts['host']) && !\in_array($parts['host'], $hosts)) {
             $format = 'Host [%s] expected';
             $errors[] = self::toErrorMessage($value, $valueName, $format, Format::toValueList($hosts));
         }
-        if (isset($ports) && isset($parts['port']) && !in_array($parts['port'], $ports)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (isset($ports) && isset($parts['port']) && !\in_array($parts['port'], $ports)) {
             $format = 'Port [%s] expected';
             $errors[] = self::toErrorMessage($value, $valueName, $format, Format::toValueList($ports));
         }
@@ -231,11 +243,15 @@ class IsUrl extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize(
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize(
             [
-                self::SERIALIZE_SCHEMES => serialize($this->schemes),
-                self::SERIALIZE_HOSTS => serialize($this->hosts),
-                self::SERIALIZE_PORTS => serialize($this->ports),
+                /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                self::SERIALIZE_SCHEMES => \serialize($this->schemes),
+                /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                self::SERIALIZE_HOSTS   => \serialize($this->hosts),
+                /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                self::SERIALIZE_PORTS   => \serialize($this->ports),
             ]
         );
     }
@@ -245,10 +261,14 @@ class IsUrl extends AbstractConstraint
      */
     public function unserialize($data): void
     {
-        $items = unserialize($data);
-        $this->schemes = unserialize($items[self::SERIALIZE_SCHEMES]);
-        $this->hosts = unserialize($items[self::SERIALIZE_HOSTS]);
-        $this->ports = unserialize($items[self::SERIALIZE_PORTS]);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $items = \unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->schemes = \unserialize($items[self::SERIALIZE_SCHEMES]);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->hosts = \unserialize($items[self::SERIALIZE_HOSTS]);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->ports = \unserialize($items[self::SERIALIZE_PORTS]);
     }
 
     public function __serialize(): array

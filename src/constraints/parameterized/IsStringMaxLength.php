@@ -30,7 +30,8 @@ class IsStringMaxLength extends AbstractMaximumIntConstraint
      */
     public static function isValid(int $maximum, $value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_string($value) && ($maximum >= strlen($value))) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_string($value) && ($maximum >= \strlen($value))) {
             return true;
         }
 

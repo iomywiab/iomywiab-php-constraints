@@ -29,12 +29,14 @@ class IsDirectory extends AbstractSimpleConstraint
      */
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_string($value) && is_dir($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_string($value) && \is_dir($value)) {
             return true;
         }
 
         if (null !== $errors) {
-            $message = is_string($value) && file_exists($value) ? 'Directory not found' : 'Is not a directory';
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $message = \is_string($value) && \file_exists($value) ? 'Directory not found' : 'Is not a directory';
             $errors[] = self::toErrorMessage($value, $valueName, $message);
         }
         return false;

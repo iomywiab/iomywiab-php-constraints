@@ -30,7 +30,8 @@ class IsFloat extends AbstractSimpleConstraint
      */
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_float($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_float($value)) {
             return true;
         }
 

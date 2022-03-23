@@ -74,7 +74,8 @@ class IsRegEx extends AbstractConstraint
     {
         IsStringNotEmpty::assert($regEx);
 
-        if (is_string($value) && (1 == preg_match($regEx, $value))) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_string($value) && (1 == \preg_match($regEx, $value))) {
             return true;
         }
 
@@ -113,7 +114,8 @@ class IsRegEx extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize($this->regEx);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize($this->regEx);
     }
 
     /**
@@ -121,7 +123,8 @@ class IsRegEx extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $this->regEx = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->regEx = \unserialize($data);
     }
 
     public function __serialize(): array

@@ -39,7 +39,8 @@ class IsBooleanOrBoolStringOrNull extends IsBoolString
         array $lowercaseStrings = self::DEFAULT_BOOLEAN_STRINGS,
         array &$errors = null
     ): bool {
-        if ((null === $value) || is_bool($value) || parent::isValid($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if ((null === $value) || \is_bool($value) || parent::isValid($value)) {
             return true;
         }
 

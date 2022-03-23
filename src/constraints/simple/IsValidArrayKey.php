@@ -29,7 +29,8 @@ class IsValidArrayKey extends AbstractSimpleConstraint
      */
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_int($value) || is_string($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_int($value) || \is_string($value)) {
             return true;
         }
 

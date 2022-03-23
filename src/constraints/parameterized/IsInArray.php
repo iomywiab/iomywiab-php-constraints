@@ -90,7 +90,8 @@ class IsInArray extends AbstractConstraint
     ): bool {
         IsArrayNotEmpty::assert($array);
 
-        if (in_array($value, $array, $strict)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\in_array($value, $array, $strict)) {
             return true;
         }
 
@@ -135,7 +136,8 @@ class IsInArray extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize([0 => $this->array, 1 => $this->strict]);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize([0 => $this->array, 1 => $this->strict]);
     }
 
     /**
@@ -143,7 +145,8 @@ class IsInArray extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $tmpArray = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $tmpArray = \unserialize($data);
         $this->array = $tmpArray[0];
         $this->strict = $tmpArray[1];
     }

@@ -122,7 +122,8 @@ class IsEqual extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize([$this->expected, $this->strict]);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize([$this->expected, $this->strict]);
     }
 
     /**
@@ -130,7 +131,8 @@ class IsEqual extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $array = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $array = \unserialize($data);
         $this->expected = $array[0];
         $this->strict = $array[1];
     }

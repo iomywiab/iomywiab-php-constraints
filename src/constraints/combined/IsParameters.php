@@ -1,5 +1,6 @@
 <?php
 /** @noinspection PhpUnused */
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
@@ -26,6 +27,7 @@ use iomywiab\iomywiab_php_constraints\interfaces\ConstraintInterface;
 
 /**
  * Class Parameters
+ *
  * @package iomywiab\iomywiab_php_constraints
  */
 class IsParameters extends AbstractConstraint
@@ -45,6 +47,7 @@ class IsParameters extends AbstractConstraint
 
     /**
      * Parameters constructor.
+     *
      * @param bool  $allowUnknownParameters
      * @param array $pattern
      */
@@ -94,11 +97,12 @@ class IsParameters extends AbstractConstraint
         $isValid = false;
         if (null === $value) {
             $isValid = self::isOptional($pattern);
-        } elseif (is_array($value)) {
+        } /** @noinspection PhpFullyQualifiedNameUsageInspection */ elseif (\is_array($value)) {
             $isValid = true;
             if (!$allowUnknownParameters) {
                 foreach ($value as $valueKey => $valueVal) {
-                    if (!is_int($valueKey) && !array_key_exists($valueKey, $pattern)) {
+                    /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                    if (!\is_int($valueKey) && !isset($pattern[$valueKey])) {
                         $isValid = false;
                         break;
                     }
@@ -107,13 +111,13 @@ class IsParameters extends AbstractConstraint
 
             if ($isValid) {
                 foreach ($pattern as $patternKey => $patternItem) {
-                    $valueVal = array_key_exists($patternKey, $value) ? $value[$patternKey] : null;
+                    $valueVal = $value[$patternKey] ?? null;
                     if ($patternItem instanceof ConstraintInterface) {
                         if (!$patternItem->isValidValue($valueVal)) {
                             $isValid = false;
                             break;
                         }
-                    } elseif (is_array($patternItem)) {
+                    } /** @noinspection PhpFullyQualifiedNameUsageInspection */ elseif (\is_array($patternItem)) {
                         if (self::isConstraintArray($patternItem)) {
                             foreach ($patternItem as $constraint) {
                                 if ($constraint instanceof ConstraintInterface) {
@@ -152,10 +156,11 @@ class IsParameters extends AbstractConstraint
                 if (!self::isOptional($pattern)) {
                     $errors[] = self::toErrorMessage($value, $valueName, 'Missing mandatory values');
                 }
-            } elseif (is_array($value)) {
+            } /** @noinspection PhpFullyQualifiedNameUsageInspection */ elseif (\is_array($value)) {
                 if (!$allowUnknownParameters) {
                     foreach ($value as $valueKey => $valueVal) {
-                        if (!is_int($valueKey) && !array_key_exists($valueKey, $pattern)) {
+                        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                        if (!\is_int($valueKey) && !isset($pattern[$valueKey])) {
                             $format = 'Found unknown field [%s]';
                             $errors[] = self::toErrorMessage(
                                 $valueVal,
@@ -168,11 +173,12 @@ class IsParameters extends AbstractConstraint
                 }
 
                 foreach ($pattern as $patternKey => $patternItem) {
-                    $valueVal = array_key_exists($patternKey, $value) ? $value[$patternKey] : null;
+                    /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                    $valueVal = $value[$patternKey] ?? null;
                     if ($patternItem instanceof ConstraintInterface) {
                         $nam = (empty($valueName) ? '' : $valueName . '.') . $patternKey;
                         $patternItem->isValidValue($valueVal, $nam, $errors);
-                    } elseif (is_array($patternItem)) {
+                    } /** @noinspection PhpFullyQualifiedNameUsageInspection */ elseif (\is_array($patternItem)) {
                         if (self::isConstraintArray($patternItem)) {
                             foreach ($patternItem as $key => $constraint) {
                                 $nam = (empty($valueName) ? '' : $valueName . '.') . $patternKey . '.' . $key;
@@ -212,15 +218,19 @@ class IsParameters extends AbstractConstraint
         }
         foreach ($pattern as $patternItem) {
             if ($patternItem instanceof ConstraintInterface) {
-                $className = get_class($patternItem);
-                if (false === strpos($className, 'OrNull')) {
+                /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                $className = \get_class($patternItem);
+                /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                if (false === \strpos($className, 'OrNull')) {
                     return false;
                 }
-            } elseif (is_array($patternItem)) {
+            } /** @noinspection PhpFullyQualifiedNameUsageInspection */ elseif (\is_array($patternItem)) {
                 if (self::isConstraintArray($patternItem)) {
                     foreach ($patternItem as $constraint) {
-                        $className = get_class($constraint);
-                        if (false === strpos($className, 'OrNull')) {
+                        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                        $className = \get_class($constraint);
+                        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                        if (false === \strpos($className, 'OrNull')) {
                             return false;
                         }
                     }
@@ -284,7 +294,8 @@ class IsParameters extends AbstractConstraint
     public function serialize(): string
     {
         $items = [0 => $this->pattern, 1 => $this->allowUnknownParameters];
-        return serialize($items);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize($items);
     }
 
     /**
@@ -292,7 +303,8 @@ class IsParameters extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $items = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $items = \unserialize($data);
         $this->pattern = $items[0];
         $this->allowUnknownParameters = $items[1];
     }

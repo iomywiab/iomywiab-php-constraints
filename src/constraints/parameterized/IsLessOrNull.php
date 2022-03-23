@@ -34,7 +34,8 @@ class IsLessOrNull extends IsLess
         }
 
         if (null !== $errors) {
-            $format = 'Numeric value smaller than maximum [%' . (is_int($maximum) ? 'd' : 'f') . '] or null expected';
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $format = 'Numeric value smaller than maximum [%' . (\is_int($maximum) ? 'd' : 'f') . '] or null expected';
             $errors[] = self::toErrorMessage($value, $valueName, $format, $maximum);
         }
         return false;

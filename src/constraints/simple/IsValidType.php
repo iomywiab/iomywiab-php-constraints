@@ -40,7 +40,8 @@ class IsValidType extends AbstractSimpleConstraint
      */
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_string($value) && in_array($value, self::ALL_TYPES)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_string($value) && \in_array($value, self::ALL_TYPES)) {
             return true;
         }
 

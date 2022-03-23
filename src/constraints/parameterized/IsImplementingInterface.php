@@ -79,15 +79,18 @@ class IsImplementingInterface extends AbstractConstraint
     ): bool {
         IsStringNotEmpty::assert($interfaceName);
 
-        if (is_object($value) || is_string($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_object($value) || \is_string($value)) {
             $value = [$value];
         }
 
-        if (is_array($value) && !empty($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_array($value) && !empty($value)) {
             $isValid = true;
             try {
                 foreach ($value as $item) {
-                    if (!(is_string($item) || is_object($item)) || !in_array(
+                    /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                    if (!(\is_string($item) || \is_object($item)) || !\in_array(
                             $interfaceName,
                             class_implements($item)
                         )) {
@@ -104,10 +107,12 @@ class IsImplementingInterface extends AbstractConstraint
         }
 
         if (null !== $errors) {
-            if (is_array($value) && !empty($value)) {
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            if (\is_array($value) && !empty($value)) {
                 foreach ($value as $item) {
                     try {
-                        if (!(is_string($item) || is_object($item)) || !in_array(
+                        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                        if (!(\is_string($item) || \is_object($item)) || !\in_array(
                                 $interfaceName,
                                 class_implements($item)
                             )) {
@@ -159,7 +164,8 @@ class IsImplementingInterface extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize($this->interfaceName);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize($this->interfaceName);
     }
 
     /**
@@ -167,7 +173,8 @@ class IsImplementingInterface extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $this->interfaceName = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->interfaceName = \unserialize($data);
     }
 
     public function __serialize(): array

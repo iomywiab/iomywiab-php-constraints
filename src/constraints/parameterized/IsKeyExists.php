@@ -60,7 +60,8 @@ class IsKeyExists extends AbstractConstraint
      */
     public static function isValid(array $array, $value, ?string $valueName = null, array &$errors = null): bool
     {
-        if ((is_int($value) || is_string($value)) && (isset($array[$value]) || array_key_exists($value, $array))) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if ((\is_int($value) || \is_string($value)) && (isset($array[$value]) || \array_key_exists($value, $array))) {
             return true;
         }
 
@@ -99,7 +100,8 @@ class IsKeyExists extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize($this->array);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize($this->array);
     }
 
     /**
@@ -107,7 +109,8 @@ class IsKeyExists extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $this->array = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->array = \unserialize($data);
     }
 
     public function __serialize(): array

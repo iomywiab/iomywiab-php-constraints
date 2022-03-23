@@ -32,7 +32,8 @@ class IsSubclassOf extends AbstractObjectOrClassnameConstraint
      */
     public static function isValid($objectOrClass, $value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_subclass_of($value, $objectOrClass, is_string($value))) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_subclass_of($value, $objectOrClass, \is_string($value))) {
             return true;
         }
 

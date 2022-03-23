@@ -58,7 +58,8 @@ class AbstractConstraintContainer extends AbstractConstraint implements Constrai
             return $this;
         }
 
-        $addMultiple = is_array($constraints);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $addMultiple = \is_array($constraints);
         if (!$addMultiple) {
             $constraints = [$constraints];
         }
@@ -69,7 +70,8 @@ class AbstractConstraintContainer extends AbstractConstraint implements Constrai
 
         if (isset($this->constraints)) {
             foreach ($constraints as $key => $constraint) {
-                if (is_int($key) && (0 > $key)) {
+                /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                if (\is_int($key) && (0 > $key)) {
                     // if a pre-defined key is specified then we use it
                     $this->constraints[$key] = $constraint;
                 } else {

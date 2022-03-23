@@ -32,7 +32,8 @@ class IsArrayMinCount extends AbstractMinimumIntConstraint
     {
         IsGreaterOrEqual::assert(0, $minimum);
 
-        if (is_array($value) && ($minimum <= count($value))) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_array($value) && ($minimum <= \count($value))) {
             return true;
         }
 

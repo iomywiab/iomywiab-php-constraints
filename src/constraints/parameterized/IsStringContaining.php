@@ -62,7 +62,8 @@ class IsStringContaining extends AbstractConstraint
      */
     public static function isValid(string $subString, $value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_string($value) && (false !== strpos($value, $subString))) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_string($value) && (false !== \strpos($value, $subString))) {
             return true;
         }
 
@@ -105,7 +106,8 @@ class IsStringContaining extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize($this->subString);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize($this->subString);
     }
 
     /**
@@ -113,7 +115,8 @@ class IsStringContaining extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $this->subString = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->subString = \unserialize($data);
     }
 
     public function __serialize(): array

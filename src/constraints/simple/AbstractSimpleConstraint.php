@@ -61,7 +61,8 @@ abstract class AbstractSimpleConstraint extends AbstractConstraint implements Si
      */
     public function serialize(): string
     {
-        return serialize(null);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize(null);
     }
 
     /**

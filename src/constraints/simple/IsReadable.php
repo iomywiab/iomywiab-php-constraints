@@ -29,12 +29,14 @@ class IsReadable extends AbstractSimpleConstraint
      */
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_string($value) && is_readable($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_string($value) && \is_readable($value)) {
             return true;
         }
 
         if (null !== $errors) {
-            $message = is_string($value) && file_exists($value) ? 'File not found' : 'File not readable';
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $message = \is_string($value) && \file_exists($value) ? 'File not found' : 'File not readable';
             $errors[] = self::toErrorMessage($value, $valueName, $message);
         }
         return false;

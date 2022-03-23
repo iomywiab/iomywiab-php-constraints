@@ -29,10 +29,12 @@ class IsStringArray extends AbstractSimpleConstraint
      */
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_array($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_array($value)) {
             $isValid = true;
             foreach ($value as $item) {
-                if (!is_string($item)) {
+                /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                if (!\is_string($item)) {
                     $isValid = false;
                     break;
                 }

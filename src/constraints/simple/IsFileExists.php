@@ -29,7 +29,8 @@ class IsFileExists extends AbstractSimpleConstraint
      */
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_string($value) && file_exists($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_string($value) && \file_exists($value)) {
             return true;
         }
 

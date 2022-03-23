@@ -97,7 +97,8 @@ class IsBoolString extends AbstractConstraint
         array &$errors = null
     ): bool {
 //        if (is_string($value) && array_key_exists($value, $lowercaseStrings)) {
-        if (is_string($value) && isset($lowercaseStrings[$value])) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_string($value) && isset($lowercaseStrings[$value])) {
             return true;
         }
 
@@ -145,7 +146,8 @@ class IsBoolString extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize($this->lowercaseStrings);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize($this->lowercaseStrings);
     }
 
     /**
@@ -153,7 +155,8 @@ class IsBoolString extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $this->lowercaseStrings = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->lowercaseStrings = \unserialize($data);
     }
 
     public function __serialize(): array

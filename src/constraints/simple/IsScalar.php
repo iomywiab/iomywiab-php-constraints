@@ -30,7 +30,8 @@ class IsScalar extends AbstractSimpleConstraint
      */
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_scalar($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_scalar($value)) {
             return true;
         }
 

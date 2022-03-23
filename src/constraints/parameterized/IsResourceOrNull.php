@@ -35,7 +35,8 @@ class IsResourceOrNull extends IsResource
 
         if (null !== $errors) {
             $expected = empty($type) ? 'any' : $type;
-            $actual = is_resource($value) ? get_resource_type($value) : 'none';
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $actual = \is_resource($value) ? \get_resource_type($value) : 'none';
             $format = 'Resource of type [%s] or null expected. Got resource type [%s]';
             $errors[] = self::toErrorMessage($value, $valueName, $format, $expected, $actual);
         }

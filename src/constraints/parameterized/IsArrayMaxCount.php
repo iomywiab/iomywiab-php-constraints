@@ -32,7 +32,8 @@ class IsArrayMaxCount extends AbstractMaximumIntConstraint
     {
         IsGreaterOrEqual::assert(0, $maximum);
 
-        if (is_array($value) && ($maximum >= count($value))) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_array($value) && ($maximum >= \count($value))) {
             return true;
         }
 

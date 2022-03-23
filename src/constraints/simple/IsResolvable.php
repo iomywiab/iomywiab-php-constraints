@@ -30,25 +30,31 @@ class IsResolvable extends AbstractSimpleConstraint
      */
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_int($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_int($value)) {
             if (0 === $value) {
                 return true; // 0 is the int expression for 0.0.0.0, which is a valid but unusable IP address
             }
-            $value = long2ip($value);
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $value = \long2ip($value);
         }
 
-        if (is_string($value) && !empty($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_string($value) && !empty($value)) {
             if ('0.0.0.0' === $value) {
                 return true; // 0.0.0.0 is a valid but unusable IP address
             }
 
             /** @noinspection SpellCheckingInspection */
-            putenv('RES_OPTIONS=retrans:1 retry:1 timeout:1 attempts:1');
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            \putenv('RES_OPTIONS=retrans:1 retry:1 timeout:1 attempts:1');
             $isIP = IsIpv4Address::isValid($value) || IsIpv6Address::isValid($value);
             if ($isIP) {
-                $address = gethostbyaddr($value);
+                /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                $address = \gethostbyaddr($value);
             } else {
-                $address = is_numeric($value) ? false : gethostbyname($value);
+                /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                $address = \is_numeric($value) ? false : \gethostbyname($value);
             }
 
             if ((false !== $address) && ($value != $address)) {

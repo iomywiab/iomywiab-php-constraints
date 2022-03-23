@@ -33,9 +33,11 @@ class IsMethodExists extends AbstractObjectOrClassnameConstraint
      */
     public static function isValid($objectOrClass, $value, ?string $valueName = null, array &$errors = null): bool
     {
-        IsTrue::assert(is_object($objectOrClass) || is_string($objectOrClass));
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        IsTrue::assert(\is_object($objectOrClass) || \is_string($objectOrClass));
 
-        if (is_string($value) && method_exists($objectOrClass, $value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_string($value) && \method_exists($objectOrClass, $value)) {
             return true;
         }
 

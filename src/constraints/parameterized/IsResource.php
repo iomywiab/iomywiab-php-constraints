@@ -58,13 +58,15 @@ class IsResource extends AbstractConstraint
      */
     public static function isValid($value, ?string $valueName = null, ?string $type = null, array &$errors = null): bool
     {
-        if (is_resource($value) && ((null === $type) || ($type == get_resource_type($value)))) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_resource($value) && ((null === $type) || ($type == \get_resource_type($value)))) {
             return true;
         }
 
         if (null !== $errors) {
             $expected = empty($type) ? 'any' : $type;
-            $actual = is_resource($value) ? get_resource_type($value) : 'none';
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $actual = \is_resource($value) ? \get_resource_type($value) : 'none';
             $format = 'Resource of type [%s] expected. Got resource type [%s]';
             $errors[] = self::toErrorMessage($value, $valueName, $format, $expected, $actual);
         }
@@ -103,7 +105,8 @@ class IsResource extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize($this->resourceType);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize($this->resourceType);
     }
 
     /**
@@ -111,7 +114,8 @@ class IsResource extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $this->resourceType = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->resourceType = \unserialize($data);
     }
 
     public function __serialize(): array

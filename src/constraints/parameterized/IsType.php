@@ -85,7 +85,8 @@ class IsType extends AbstractConstraint
     {
         IsValidType::assert($type);
 
-        if ($type == gettype($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if ($type == \gettype($value)) {
             return true;
         }
 
@@ -124,7 +125,8 @@ class IsType extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize($this->type);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize($this->type);
     }
 
     /**
@@ -132,7 +134,8 @@ class IsType extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $this->type = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->type = \unserialize($data);
     }
 
     public function __serialize(): array

@@ -31,7 +31,8 @@ class IsArraySameTypeItems extends AbstractSimpleConstraint
      */
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_array($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_array($value)) {
             $isHomogeneous = true;
             $firstType = null;
             foreach ($value as $item) {
@@ -51,7 +52,8 @@ class IsArraySameTypeItems extends AbstractSimpleConstraint
         }
 
         if (null !== $errors) {
-            if (is_array($value)) {
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            if (\is_array($value)) {
                 $firstType = null;
                 $firstItem = null;
                 $firstKey = null;

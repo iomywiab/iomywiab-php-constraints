@@ -29,7 +29,8 @@ class IsStringOrNull extends AbstractSimpleConstraint
      */
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
-        if ((null === $value) || is_string($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if ((null === $value) || \is_string($value)) {
             return true;
         }
 

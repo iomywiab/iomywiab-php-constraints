@@ -29,7 +29,8 @@ class IsInterfaceExists extends AbstractSimpleConstraint
      */
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_string($value) && interface_exists($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_string($value) && \interface_exists($value)) {
             return true;
         }
 

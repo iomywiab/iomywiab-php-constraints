@@ -75,8 +75,10 @@ class IsTypeOfAny extends AbstractConstraint
     {
         IsValidTypeArray::assert($types);
 
-        $type = gettype($value);
-        if (in_array($type, $types)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $type = \gettype($value);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\in_array($type, $types)) {
             return true;
         }
 
@@ -116,7 +118,8 @@ class IsTypeOfAny extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize($this->types);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize($this->types);
     }
 
     /**
@@ -124,7 +127,8 @@ class IsTypeOfAny extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $this->types = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->types = \unserialize($data);
     }
 
     public function __serialize(): array

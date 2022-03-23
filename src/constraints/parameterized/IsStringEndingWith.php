@@ -62,9 +62,12 @@ class IsStringEndingWith extends AbstractConstraint
      */
     public static function isValid(string $endString, $value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_string($value)) {
-            $lenEnd = strlen($endString);
-            $lenValue = strlen($value);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_string($value)) {
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $lenEnd = \strlen($endString);
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $lenValue = \strlen($value);
             $expectedPos = $lenValue - $lenEnd;
             if ((0 <= $expectedPos) && ($expectedPos <= $lenValue)
                 && ($expectedPos === strpos($value, $endString, $expectedPos))) {
@@ -111,7 +114,8 @@ class IsStringEndingWith extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize($this->endString);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize($this->endString);
     }
 
     /**
@@ -119,7 +123,8 @@ class IsStringEndingWith extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $this->endString = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->endString = \unserialize($data);
     }
 
     public function __serialize(): array

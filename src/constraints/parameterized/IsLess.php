@@ -74,12 +74,14 @@ class IsLess extends AbstractConstraint
     {
         IsNumeric::assert($maximum);
 
-        if (is_numeric($value) && ($value < $maximum)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_numeric($value) && ($value < $maximum)) {
             return true;
         }
 
         if (null !== $errors) {
-            $format = 'Numeric value smaller than maximum [%' . (is_int($maximum) ? 'd' : 'f') . '] expected';
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $format = 'Numeric value smaller than maximum [%' . (\is_int($maximum) ? 'd' : 'f') . '] expected';
             $errors[] = self::toErrorMessage($value, $valueName, $format, $maximum);
         }
         return false;
@@ -117,7 +119,8 @@ class IsLess extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize($this->maximum);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize($this->maximum);
     }
 
     /**
@@ -125,7 +128,8 @@ class IsLess extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $this->maximum = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->maximum = \unserialize($data);
     }
 
     public function __serialize(): array

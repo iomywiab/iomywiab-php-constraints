@@ -13,6 +13,7 @@
  * Module name..: iomywiab-php-constraints
  * Last modified: 2021-10-20 18:30:00
  */
+
 /** @noinspection PhpUnused */
 
 declare(strict_types=1);
@@ -26,6 +27,7 @@ use ReflectionClass;
 
 /**
  * Class Format
+ *
  * @package iomywiab\iomywiab_php_constraints
  */
 class Format
@@ -82,7 +84,7 @@ class Format
             $return = self::TRUE_STRING;
         } elseif (false === $value) {
             $return = self::FALSE_STRING;
-        } elseif (is_array($value)) {
+        } /** @noinspection PhpFullyQualifiedNameUsageInspection */ elseif (\is_array($value)) {
             if (false !== $useTypeDelimiters) {
                 $return = '[';
                 $endDelimiter = ']';
@@ -104,23 +106,25 @@ class Format
                     $separator = ',';
                 }
             }
-        } elseif (is_object($value)) {
+        } /** @noinspection PhpFullyQualifiedNameUsageInspection */ elseif (\is_object($value)) {
             $return = self::toShortClassName($value);
 
-            if (method_exists($value, '__toString')) {
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            if (\method_exists($value, '__toString')) {
                 $return .= ':[' . $value->__toString() . ']';
             } elseif ($value instanceof DateTime || $value instanceof DateTimeImmutable) {
                 $return .= ':[' . $value->format('c') . ']';
             }
-        } elseif (is_string($value)) {
+        } /** @noinspection PhpFullyQualifiedNameUsageInspection */ elseif (\is_string($value)) {
             if (true === $useTypeDelimiters) {
                 $return = '"' . $value;
                 $endDelimiter = '"';
             } else {
                 $return = $value;
             }
-        } elseif (is_resource($value)) {
-            $return = get_resource_type($value);
+        } /** @noinspection PhpFullyQualifiedNameUsageInspection */ elseif (\is_resource($value)) {
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $return = \get_resource_type($value);
         } else {
             $return = (string)$value;
         }
@@ -137,7 +141,8 @@ class Format
     public static function toShortClassName($object): string
     {
         try {
-            if (is_string($object) || is_object(($object))) {
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            if (\is_string($object) || \is_object(($object))) {
                 return (new ReflectionClass($object))->getShortName();
             }
         } catch (Exception $ignore) {
@@ -156,7 +161,8 @@ class Format
         if (null === $value) {
             return self::NULL_STRING;
         }
-        return is_object($value) ? get_class($value) : gettype($value);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \is_object($value) ? \get_class($value) : \gettype($value);
     }
 
     /**
@@ -173,10 +179,12 @@ class Format
         if ((null === $maxLength) || (3 >= $maxLength)) {
             return $string;
         }
-        $length = strlen($string);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $length = \strlen($string);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         return ($length <= $maxLength)
             ? $string
-            : substr($string, 0, $maxLength - 3) . '...';
+            : \substr($string, 0, $maxLength - 3) . '...';
     }
 
     /**
@@ -186,7 +194,8 @@ class Format
     public static function toClassName($object): string
     {
         try {
-            if (is_string($object) || is_object(($object))) {
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            if (\is_string($object) || \is_object(($object))) {
                 return (new ReflectionClass($object))->getName();
             }
         } catch (Exception $ignore) {
@@ -200,18 +209,21 @@ class Format
      * @param string|null $valueName
      * @param string      $format use by vsprintf()
      * @return string
-     * @see AbstractConstraint::toErrorMessage()
+     * @see          AbstractConstraint::toErrorMessage()
      * @noinspection SpellCheckingInspection
      */
     public static function toErrorMessage($value, ?string $valueName, string $format): string
     {
-        $num = func_num_args();
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $num = \func_num_args();
         if (3 < $num) {
-            $arguments = func_get_args();
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $arguments = \func_get_args();
             unset($arguments[2]); // format
             unset($arguments[1]); // valueName
             unset($arguments[0]); // value
-            $format = vsprintf($format, $arguments);
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $format = \vsprintf($format, $arguments);
         }
         return (empty($valueName) ? '' : $valueName . ': ')
             . $format
@@ -230,7 +242,8 @@ class Format
             return self::NULL_STRING;
         }
 
-        if (is_object($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_object($value)) {
             return self::toReducedString('object:' . self::toString($value), $maxLength);
         }
 
@@ -241,12 +254,12 @@ class Format
             return $type . ':' . $val . ']';
         }
 
-        $typeLength = strlen($type);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $typeLength = \strlen($type);
 
         return ($typeLength + 2 >= $maxLength)
             ? self::toReducedString($type, $maxLength)
             : self::toReducedString($type . ':' . $val . ']', $maxLength);
     }
-
 
 }

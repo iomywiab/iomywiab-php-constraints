@@ -73,12 +73,14 @@ class IsGreater extends AbstractConstraint
     {
         IsNumeric::assert($minimum);
 
-        if (is_numeric($value) && ($value > $minimum)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_numeric($value) && ($value > $minimum)) {
             return true;
         }
 
         if (null !== $errors) {
-            $format = 'Numeric value greater than [%' . (is_int($minimum) ? 'd' : 'f') . '] expected';
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $format = 'Numeric value greater than [%' . (\is_int($minimum) ? 'd' : 'f') . '] expected';
             $errors[] = self::toErrorMessage($value, $valueName, $format, $minimum);
         }
         return false;
@@ -116,7 +118,8 @@ class IsGreater extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize($this->minimum);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize($this->minimum);
     }
 
     /**
@@ -124,7 +127,8 @@ class IsGreater extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $this->minimum = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->minimum = \unserialize($data);
     }
 
     public function __serialize(): array

@@ -88,13 +88,16 @@ class IsInRange extends AbstractConstraint
         IsGreaterOrEqual::assert($minimum, $maximum);
         IsLessOrEqual::assert($maximum, $minimum);
 
-        if (is_numeric($value) && ($minimum <= $value) && ($value <= $maximum)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_numeric($value) && ($minimum <= $value) && ($value <= $maximum)) {
             return true;
         }
 
         if (null !== $errors) {
-            $minType = is_int($minimum) ? 'd' : 'f';
-            $maxType = is_int($maximum) ? 'd' : 'f';
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $minType = \is_int($minimum) ? 'd' : 'f';
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $maxType = \is_int($maximum) ? 'd' : 'f';
             $format = 'Numeric value in range [%' . $minType . ',%' . $maxType . '] expected';
             $errors[] = self::toErrorMessage($value, $valueName, $format, $minimum, $maximum);
         }
@@ -135,7 +138,8 @@ class IsInRange extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize([0 => $this->minimum, 1 => $this->maximum]);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize([0 => $this->minimum, 1 => $this->maximum]);
     }
 
     /**
@@ -143,7 +147,8 @@ class IsInRange extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $both = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $both = \unserialize($data);
         $this->minimum = $both[0];
         $this->maximum = $both[1];
     }

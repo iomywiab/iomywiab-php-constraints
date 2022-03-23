@@ -36,7 +36,8 @@ class IsGreaterOrEqual extends IsGreater
     {
         IsNumeric::assert($minimum);
 
-        if (is_numeric($value) && ($value >= $minimum)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_numeric($value) && ($value >= $minimum)) {
             return true;
         }
 

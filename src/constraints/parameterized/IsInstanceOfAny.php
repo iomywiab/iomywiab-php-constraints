@@ -128,7 +128,8 @@ class IsInstanceOfAny extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize($this->classesAndInterfaces);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize($this->classesAndInterfaces);
     }
 
     /**
@@ -136,7 +137,8 @@ class IsInstanceOfAny extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $this->classesAndInterfaces = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->classesAndInterfaces = \unserialize($data);
     }
 
     public function __serialize(): array

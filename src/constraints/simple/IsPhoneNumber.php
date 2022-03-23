@@ -31,7 +31,8 @@ class IsPhoneNumber extends AbstractSimpleConstraint
      */
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
-        if ((is_int($value) && ($value >= 0)) || (is_string($value) && (1 == preg_match(self::REGEX, $value)))) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if ((\is_int($value) && ($value >= 0)) || (\is_string($value) && (1 == \preg_match(self::REGEX, $value)))) {
             return true;
         }
 

@@ -30,7 +30,8 @@ class IsIpv4Address extends AbstractSimpleConstraint
      */
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (false !== filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (false !== \filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
             return true;
         }
 

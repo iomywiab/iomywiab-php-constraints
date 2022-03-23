@@ -31,12 +31,15 @@ class IsArrayUniqueValues extends AbstractSimpleConstraint
      */
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (!is_array($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (!\is_array($value)) {
             return true;
         }
 
-        $all = count($value);
-        $unique = count(array_unique($value));
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $all = \count($value);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $unique = \count(\array_unique($value));
 
         if ($all == $unique) {
             return true;
@@ -45,7 +48,8 @@ class IsArrayUniqueValues extends AbstractSimpleConstraint
         if (null !== $errors) {
             $counts = [];
             foreach ($value as $item) {
-                if (array_key_exists($item, $counts)) {
+                /** @noinspection PhpFullyQualifiedNameUsageInspection */
+                if (\array_key_exists($item, $counts)) {
                     $counts[$item]++;
                 } else {
                     $counts[$item] = 1;

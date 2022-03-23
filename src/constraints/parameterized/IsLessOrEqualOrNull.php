@@ -34,8 +34,9 @@ class IsLessOrEqualOrNull extends IsLessOrEqual
         }
 
         if (null !== $errors) {
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
             $format = 'Numeric value smaller than or equal to maximum [%'
-                . (is_int($maximum) ? 'd' : 'f') . '] or null expected';
+                . (\is_int($maximum) ? 'd' : 'f') . '] or null expected';
             $errors[] = self::toErrorMessage($value, $valueName, $format, $maximum);
         }
         return false;

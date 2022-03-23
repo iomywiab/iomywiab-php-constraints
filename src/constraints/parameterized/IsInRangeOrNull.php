@@ -34,8 +34,10 @@ class IsInRangeOrNull extends IsInRange
         }
 
         if (null !== $errors) {
-            $minType = is_int($minimum) ? 'd' : 'f';
-            $maxType = is_int($maximum) ? 'd' : 'f';
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $minType = \is_int($minimum) ? 'd' : 'f';
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $maxType = \is_int($maximum) ? 'd' : 'f';
             $format = 'Numeric value in range [%' . $minType . ',%' . $maxType . '] or null expected';
             $errors[] = self::toErrorMessage($value, $valueName, $format, $minimum, $maximum);
         }

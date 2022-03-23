@@ -36,13 +36,15 @@ class IsLessOrEqual extends IsLess
     {
         IsNumeric::assert($maximum);
 
-        if (is_numeric($value) && ($value <= $maximum)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_numeric($value) && ($value <= $maximum)) {
             return true;
         }
 
         if (null !== $errors) {
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
             $format = 'Numeric value smaller than or equal to maximum [%'
-                . (is_int($maximum) ? 'd' : 'f') . '] expected';
+                . (\is_int($maximum) ? 'd' : 'f') . '] expected';
             $errors[] = self::toErrorMessage($value, $valueName, $format, $maximum);
         }
         return false;

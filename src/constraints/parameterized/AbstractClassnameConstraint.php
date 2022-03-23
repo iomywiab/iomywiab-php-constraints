@@ -112,7 +112,8 @@ abstract class AbstractClassnameConstraint extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize($this->className);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize($this->className);
     }
 
     /**
@@ -120,7 +121,8 @@ abstract class AbstractClassnameConstraint extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $this->className = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->className = \unserialize($data);
     }
 
     public function __serialize(): array

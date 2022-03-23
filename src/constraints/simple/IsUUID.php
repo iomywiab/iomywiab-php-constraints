@@ -32,9 +32,10 @@ class IsUUID extends AbstractSimpleConstraint
      */
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_string($value)
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_string($value)
             && ((self::ZERO_UUID == $value)
-                || (1 == preg_match(self::REGEX, str_replace(['urn:', 'uuid:', '{', '}'], '', $value))))) {
+                || (1 == \preg_match(self::REGEX, \str_replace(['urn:', 'uuid:', '{', '}'], '', $value))))) {
             return true;
         }
 

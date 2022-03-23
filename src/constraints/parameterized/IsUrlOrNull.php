@@ -47,7 +47,8 @@ class IsUrlOrNull extends IsUrl
         }
 
         if (null !== $errors) {
-            if (false === filter_var($value, FILTER_VALIDATE_URL)) {
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            if (false === \filter_var($value, FILTER_VALIDATE_URL)) {
                 $errors[] = self::toErrorMessage($value, $valueName, 'URL or null expected');
             } else {
                 self::addDetailErrors($value, $valueName, $schemes, $hosts, $ports, $errors);

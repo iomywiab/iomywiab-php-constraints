@@ -39,7 +39,8 @@ class IsAOf extends AbstractClassnameConstraint
     {
         IsStringNotEmpty::assert($className);
 
-        if (is_a($value, $className, is_string($value))) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_a($value, $className, \is_string($value))) {
             return true;
         }
 

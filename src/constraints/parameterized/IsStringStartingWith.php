@@ -62,7 +62,8 @@ class IsStringStartingWith extends AbstractConstraint
      */
     public static function isValid(string $prefix, $value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_string($value) && (0 === strpos($value, $prefix))) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_string($value) && (0 === \strpos($value, $prefix))) {
             return true;
         }
 
@@ -105,7 +106,8 @@ class IsStringStartingWith extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize($this->prefix);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize($this->prefix);
     }
 
     /**
@@ -113,7 +115,8 @@ class IsStringStartingWith extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $this->prefix = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->prefix = \unserialize($data);
     }
 
     public function __serialize(): array

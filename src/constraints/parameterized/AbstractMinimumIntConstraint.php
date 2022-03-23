@@ -115,7 +115,8 @@ abstract class AbstractMinimumIntConstraint extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize($this->minimum);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize($this->minimum);
     }
 
     /**
@@ -123,7 +124,8 @@ abstract class AbstractMinimumIntConstraint extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $this->minimum = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->minimum = \unserialize($data);
     }
 
     public function __serialize(): array

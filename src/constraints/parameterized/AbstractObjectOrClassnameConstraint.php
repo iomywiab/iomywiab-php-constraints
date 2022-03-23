@@ -43,7 +43,8 @@ abstract class AbstractObjectOrClassnameConstraint extends AbstractConstraint
      */
     public function __construct($objectOrClass)
     {
-        IsTrue::assert(is_object($objectOrClass) || is_string($objectOrClass));
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        IsTrue::assert(\is_object($objectOrClass) || \is_string($objectOrClass));
 
         $this->objectOrClass = $objectOrClass;
     }
@@ -76,7 +77,8 @@ abstract class AbstractObjectOrClassnameConstraint extends AbstractConstraint
     // @codeCoverageIgnoreStart
     public static function isValid($objectOrClass, $value, ?string $valueName = null, array &$errors = null): bool
     {
-        IsTrue::assert(is_object($objectOrClass) || is_string($objectOrClass));
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        IsTrue::assert(\is_object($objectOrClass) || \is_string($objectOrClass));
 
         if (null !== $errors) {
             $errors[] = 'Constraint [' . static::class . '] is incomplete: Method [isValid] is not overloaded. Value '
@@ -119,7 +121,8 @@ abstract class AbstractObjectOrClassnameConstraint extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize($this->objectOrClass);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize($this->objectOrClass);
     }
 
     /**
@@ -127,7 +130,8 @@ abstract class AbstractObjectOrClassnameConstraint extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $this->objectOrClass = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->objectOrClass = \unserialize($data);
     }
 
 

@@ -30,20 +30,23 @@ abstract class AbstractConstraint implements ConstraintInterface
     /**
      * @param             $value
      * @param string|null $valueName
-     * @param string      $format use by vsprintf()
+     * @param string      $format used by vsprintf()
      * @return string
      * @see Format::toErrorMessage()
      * @noinspection SpellCheckingInspection
      */
     protected static function toErrorMessage($value, ?string $valueName, string $format): string
     {
-        $num = func_num_args();
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $num = \func_num_args();
         if (3 < $num) {
-            $arguments = func_get_args();
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $arguments = \func_get_args();
             unset($arguments[2]); // format
             unset($arguments[1]); // valueName
             unset($arguments[0]); // value
-            $format = vsprintf($format, $arguments);
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $format = \vsprintf($format, $arguments);
         }
         return (empty($valueName) ? '' : $valueName . ': ')
             . $format

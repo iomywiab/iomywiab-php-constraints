@@ -115,7 +115,8 @@ abstract class AbstractMaximumIntConstraint extends AbstractConstraint
      */
     public function serialize(): string
     {
-        return serialize($this->maximum);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        return \serialize($this->maximum);
     }
 
     /**
@@ -123,7 +124,8 @@ abstract class AbstractMaximumIntConstraint extends AbstractConstraint
      */
     public function unserialize($data)
     {
-        $this->maximum = unserialize($data);
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        $this->maximum = \unserialize($data);
     }
 
     public function __serialize(): array

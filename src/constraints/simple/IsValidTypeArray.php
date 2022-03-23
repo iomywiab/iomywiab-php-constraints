@@ -31,7 +31,8 @@ class IsValidTypeArray extends AbstractSimpleConstraint
      */
     public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_array($value) && !empty($value)) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_array($value) && !empty($value)) {
             $isOk = true;
             foreach ($value as $item) {
                 if (!IsValidType::isValid($item)) {

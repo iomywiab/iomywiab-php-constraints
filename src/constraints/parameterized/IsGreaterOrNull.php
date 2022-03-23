@@ -34,7 +34,8 @@ class IsGreaterOrNull extends IsGreater
         }
 
         if (null !== $errors) {
-            $format = 'Numeric value greater than minimum [%' . (is_int($minimum) ? 'd' : 'f') . '] or null expected';
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            $format = 'Numeric value greater than minimum [%' . (\is_int($minimum) ? 'd' : 'f') . '] or null expected';
             $errors[] = self::toErrorMessage($value, $valueName, $format, $minimum);
         }
         return false;

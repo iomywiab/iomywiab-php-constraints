@@ -30,7 +30,8 @@ class IsStringMinLength extends AbstractMinimumIntConstraint
      */
     public static function isValid(int $minimum, $value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (is_string($value) && ($minimum <= strlen($value))) {
+        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+        if (\is_string($value) && ($minimum <= \strlen($value))) {
             return true;
         }
 
