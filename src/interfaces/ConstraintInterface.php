@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: ConstraintInterface.php
- * Class name...: ConstraintInterface.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:00
+ * Last modified: 2022-05-13 22:56:41
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -19,24 +19,21 @@ declare(strict_types=1);
 namespace iomywiab\iomywiab_php_constraints\interfaces;
 
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
-use Serializable;
 
 /**
- * Interface ConstraintInterface
- * @package iomywiab\iomywiab_php_constraints\interfaces
+ * @psalm-immutable
  */
-interface ConstraintInterface extends Serializable
+interface ConstraintInterface extends \Serializable
 {
-
     /**
      * Always calls static::isValid and enriches the parameter list with values stored in the constraint object (if any)
      *
-     * @param mixed       $value
-     * @param string|null $valueName
-     * @param array|null  $errors
+     * @param mixed                  $value
+     * @param string|null            $valueName
+     * @param array<int,string>|null $errors
      * @return bool
      */
-    public function isValidValue($value, ?string $valueName = null, array &$errors = null): bool;
+    public function isValidValue(mixed $value, ?string $valueName = null, array &$errors = null): bool;
 
     /**
      * Always calls static::assert and enriches the parameter list with values stored in the constraint object (if any).
@@ -46,7 +43,7 @@ interface ConstraintInterface extends Serializable
      * @param string|null $message
      * @throws ConstraintViolationException
      */
-    public function assertValue($value, ?string $valueName = null, ?string $message = null): void;
+    public function assertValue(mixed $value, ?string $valueName = null, ?string $message = null): void;
 
 //    /**
 //     * This is where all the checks happen - the heart of the constraint.
@@ -69,17 +66,17 @@ interface ConstraintInterface extends Serializable
 //     * }
 //     * return false;
 //     *
-//     * @param mixed       $value will be validated. functions returns true if value passes all checks, false otherwise
+//     * @param mixed       $value will be validated. function returns true if value passes all checks, false otherwise
 //     * @param string|null $valueName might get validated and throws exceptions on failure.
-//     * @param array|null  $errors might get validated and throws exceptions on failure.
+//     * @param array<int,string>|null  $errors might get validated and throws exceptions on failure.
 //     * @return bool result of checking $value.
 //     * @throws ConstraintViolationException this exception is thrown if parameters other than $value are invalid.
 //     */
 //    public static function isValid(
-//        /* additional mandatory parameters here (these parameters should get validated before executing this check) */
-//        $value,
+//        /* additional MANDATORY parameters here (these parameters should get validated before executing this check) */
+//        mixed $value,
+//        /* additional OPTIONAL parameters here (these parameters should get validated before executing this check), */
 //        ?string $valueName = null,
-//        /* additional optional parameters here (these parameters should get validated before executing this check), */
 //        array &$errors = null): bool;
 //
 //    /**
@@ -89,14 +86,13 @@ interface ConstraintInterface extends Serializable
 //     *
 //     * @param mixed       $value
 //     * @param string|null $valueName
-//     * @param array|null  $errors
+//     * @param array<int,string>|null  $errors
 //     * @throws ConstraintViolationException thrown if value or other parameters are invalid.
 //     */
 //    public static function assert(
-//        /* additional mandatory parameters here (these parameters should NOT get validated here), */
-//        $value,
+//        /* additional MANDATORY parameters here (these parameters should NOT get validated here), */
+//        mixed $value,
+//        /* additional OPTIONAL parameters here (these parameters should NOT get validated here), */
 //        ?string $valueName = null,
-//        /* additional optional parameters here (these parameters should NOT get validated here), */
 //        array &$errors = null): void;
-
 }

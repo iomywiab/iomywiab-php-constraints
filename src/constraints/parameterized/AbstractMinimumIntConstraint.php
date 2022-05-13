@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: AbstractMinimumIntConstraint.php
- * Class name...: AbstractMinimumIntConstraint.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:32
+ * Last modified: 2022-05-13 22:56:43
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -20,35 +20,27 @@ namespace iomywiab\iomywiab_php_constraints\constraints\parameterized;
 
 use iomywiab\iomywiab_php_constraints\AbstractConstraint;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
-use iomywiab\iomywiab_php_constraints\Format;
+use iomywiab\iomywiab_php_constraints\formatter\complex\Format;
 
 /**
- * Class AbstractMinimumIntConstraint
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 abstract class AbstractMinimumIntConstraint extends AbstractConstraint
 {
-    /**
-     * @var int
-     */
-    private $minimum;
-
     /**
      * IsArrayMinCount constructor.
      * @param int $minimum
      * @throws ConstraintViolationException
      */
-    public function __construct(int $minimum)
+    public function __construct(private /*readonly (but serializable)*/ int $minimum)
     {
         IsGreaterOrEqual::assert(0, $minimum);
-
-        $this->minimum = $minimum;
     }
 
     /**
      * @inheritDoc
      */
-    public function isValidValue($value, ?string $valueName = null, array &$errors = null): bool
+    public function isValidValue(mixed $value, ?string $valueName = null, array &$errors = null): bool
     {
         return static::isValid($this->minimum, $value, $valueName, $errors);
 //        try {
@@ -64,20 +56,22 @@ abstract class AbstractMinimumIntConstraint extends AbstractConstraint
 
     /**
      * @param int         $minimum
-     * @param             $value
+     * @param mixed       $value
      * @param string|null $valueName
      * @param array|null  $errors
      * @return bool
      * @throws ConstraintViolationException
      */
     // @codeCoverageIgnoreStart
-    public static function isValid(int $minimum, $value, ?string $valueName = null, array &$errors = null): bool
+    public static function isValid(int $minimum, mixed $value, ?string $valueName = null, array &$errors = null): bool
     {
         IsGreaterOrEqual::assert(0, $minimum);
 
         if (null !== $errors) {
             $errors[] = 'Constraint [' . static::class . '] is incomplete: Method [isValid] is not overloaded. Value '
-                . Format::toDescription($value) . ' cannot be verified against ' . Format::toDescription($minimum);
+                . Format::toDebugString($value) . ' cannot be verified against ' . Format::toDebugString(
+                    $minimum
+                );
         }
         return false;
     }
@@ -86,21 +80,21 @@ abstract class AbstractMinimumIntConstraint extends AbstractConstraint
     /**
      * @inheritDoc
      */
-    public function assertValue($value, ?string $valueName = null, ?string $message = null): void
+    public function assertValue(mixed $value, ?string $valueName = null, ?string $message = null): void
     {
         static::assert($this->minimum, $value, $valueName, $message);
     }
 
     /**
      * @param int         $minimum
-     * @param             $value
+     * @param mixed       $value
      * @param string|null $valueName
      * @param string|null $message
      * @throws ConstraintViolationException
      */
     public static function assert(
         int $minimum,
-        $value,
+        mixed $value,
         ?string $valueName = null,
         ?string $message = null
     ): void {
@@ -115,27 +109,31 @@ abstract class AbstractMinimumIntConstraint extends AbstractConstraint
      */
     public function serialize(): string
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         return \serialize($this->minimum);
     }
 
     /**
      * @inheritDoc
      */
-    public function unserialize($data)
+    public function unserialize(mixed $data): void
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        $this->minimum = \unserialize($data);
+        $this->minimum = \unserialize($data, ['allowed_class' => false]);
     }
 
+    /**
+     * @return int[]
+     */
     public function __serialize(): array
     {
         return [$this->minimum];
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function __unserialize(array $data): void
     {
         $this->minimum = $data[0];
     }
-
 }

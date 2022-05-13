@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsImplementingInterface.php
- * Class name...: IsImplementingInterface.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:32
+ * Last modified: 2022-05-13 22:56:41
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -24,26 +24,19 @@ use iomywiab\iomywiab_php_constraints\constraints\simple\IsStringNotEmpty;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
 
 /**
- * Class IsImplementingInterface
  * Checks for instance only. IsInstanceOf is more flexible and probably faster
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 class IsImplementingInterface extends AbstractConstraint
 {
-    /**
-     * @var string
-     */
-    private $interfaceName;
-
     /**
      * IsImplementingInterface constructor.
      * @param string $interfaceName
      * @throws ConstraintViolationException
      */
-    public function __construct(string $interfaceName)
+    public function __construct(private /*readonly (but serializable)*/string $interfaceName)
     {
         IsStringNotEmpty::assert($interfaceName);
-        $this->interfaceName = $interfaceName;
     }
 
     /**
@@ -67,38 +60,39 @@ class IsImplementingInterface extends AbstractConstraint
      * @param string      $interfaceName
      * @param mixed       $value
      * @param string|null $valueName
-     * @param array|null  $errors
+     * @param array<int,string>|null  $errors
      * @return bool
      * @throws ConstraintViolationException
+     * @noinspection PhpUnusedLocalVariableInspection
      */
     public static function isValid(
         string $interfaceName,
-        $value,
+        mixed $value,
         ?string $valueName = null,
         array &$errors = null
     ): bool {
         IsStringNotEmpty::assert($interfaceName);
 
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         if (\is_object($value) || \is_string($value)) {
             $value = [$value];
         }
 
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        if (\is_array($value) && !empty($value)) {
+        if (\is_array($value) && ([] !== $value)) {
             $isValid = true;
             try {
                 foreach ($value as $item) {
-                    /** @noinspection PhpFullyQualifiedNameUsageInspection */
-                    if (!(\is_string($item) || \is_object($item)) || !\in_array(
+                    if (
+                        !(\is_string($item) || \is_object($item)) || !\in_array(
                             $interfaceName,
-                            class_implements($item)
-                        )) {
+                            class_implements($item),
+                            true
+                        )
+                    ) {
                         $isValid = false;
                         break;
                     }
                 }
-            } catch (Exception $ignore) {
+            } /** @noinspection BadExceptionsProcessingInspection */ catch (Exception $ignore) {
                 $isValid = false;
             }
             if ($isValid) {
@@ -107,19 +101,20 @@ class IsImplementingInterface extends AbstractConstraint
         }
 
         if (null !== $errors) {
-            /** @noinspection PhpFullyQualifiedNameUsageInspection */
-            if (\is_array($value) && !empty($value)) {
+            if (\is_array($value) && ([] !== $value)) {
                 foreach ($value as $item) {
                     try {
-                        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-                        if (!(\is_string($item) || \is_object($item)) || !\in_array(
+                        if (
+                            !(\is_string($item) || \is_object($item)) || !\in_array(
                                 $interfaceName,
-                                class_implements($item)
-                            )) {
+                                class_implements($item),
+                                true
+                            )
+                        ) {
                             $format = 'Class implementing interface [%s] expected';
                             $errors[] = self::toErrorMessage($value, $valueName, $format, $interfaceName);
                         }
-                    } catch (Exception $ignore) {
+                    } /** @noinspection BadExceptionsProcessingInspection */ catch (Exception $ignore) {
                         $format = 'Exception when checking interfaces';
                         $errors[] = self::toErrorMessage($value, $valueName, $format);
                     }
@@ -142,14 +137,14 @@ class IsImplementingInterface extends AbstractConstraint
 
     /**
      * @param string      $interfaceName
-     * @param             $value
+     * @param mixed             $value
      * @param string|null $valueName
      * @param string|null $message
      * @throws ConstraintViolationException
      */
     public static function assert(
         string $interfaceName,
-        $value,
+        mixed $value,
         ?string $valueName = null,
         ?string $message = null
     ): void {
@@ -164,27 +159,31 @@ class IsImplementingInterface extends AbstractConstraint
      */
     public function serialize(): string
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         return \serialize($this->interfaceName);
     }
 
     /**
      * @inheritDoc
      */
-    public function unserialize($data)
+    public function unserialize(mixed $data): void
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        $this->interfaceName = \unserialize($data);
+        $this->interfaceName = \unserialize($data, ['allowed_class' => false]);
     }
 
+    /**
+     * @return string[]
+     */
     public function __serialize(): array
     {
         return [$this->interfaceName];
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function __unserialize(array $data): void
     {
         $this->interfaceName = $data[0];
     }
-
 }

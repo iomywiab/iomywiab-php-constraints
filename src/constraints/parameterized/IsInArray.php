@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsInArray.php
- * Class name...: IsInArray.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:00
+ * Last modified: 2022-05-13 22:56:41
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -21,25 +21,14 @@ namespace iomywiab\iomywiab_php_constraints\constraints\parameterized;
 use iomywiab\iomywiab_php_constraints\AbstractConstraint;
 use iomywiab\iomywiab_php_constraints\constraints\simple\IsArrayNotEmpty;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
-use iomywiab\iomywiab_php_constraints\Format;
+use iomywiab\iomywiab_php_constraints\formatter\complex\Format;
 
 /**
- * Class Enum
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 class IsInArray extends AbstractConstraint
 {
     public const DEFAULT_STRICT = true;
-
-    /**
-     * @var array
-     */
-    private $array;
-
-    /**
-     * @var bool
-     */
-    private $strict;
 
     /**
      * Instance constructor.
@@ -47,12 +36,11 @@ class IsInArray extends AbstractConstraint
      * @param bool  $strict
      * @throws ConstraintViolationException
      */
-    public function __construct(array $array, bool $strict = self::DEFAULT_STRICT)
-    {
+    public function __construct(
+        private /*readonly (but serializable)*/ array $array,
+        private /*readonly (but serializable)*/ ?bool $strict = null
+    ) {
         IsArrayNotEmpty::assert($array);
-
-        $this->array = $array;
-        $this->strict = $strict;
     }
 
     /**
@@ -60,7 +48,7 @@ class IsInArray extends AbstractConstraint
      */
     public function isValidValue($value, ?string $valueName = null, array &$errors = null): bool
     {
-        return static::isValid($this->array, $value, $valueName, $this->strict, $errors);
+        return static::isValid($this->array, $value, $this->strict, $valueName, $errors);
 //        try {
 //            return static::isValid($this->array, $value, $valueName, $this->strict, $errors);
 //
@@ -73,25 +61,24 @@ class IsInArray extends AbstractConstraint
     }
 
     /**
-     * @param array       $array
-     * @param             $value
-     * @param string|null $valueName
-     * @param bool        $strict
-     * @param array|null  $errors
+     * @param array                  $array
+     * @param mixed                  $value
+     * @param bool|null              $strict
+     * @param string|null            $valueName
+     * @param array<int,string>|null $errors
      * @return bool
      * @throws ConstraintViolationException
-     */
+    */
     public static function isValid(
         array $array,
-        $value,
+        mixed $value,
+        ?bool $strict = null,
         ?string $valueName = null,
-        bool $strict = self::DEFAULT_STRICT,
         array &$errors = null
     ): bool {
         IsArrayNotEmpty::assert($array);
 
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        if (\in_array($value, $array, $strict)) {
+        if (\in_array($value, $array, ($strict ?? self::DEFAULT_STRICT))) {
             return true;
         }
 
@@ -107,26 +94,26 @@ class IsInArray extends AbstractConstraint
      */
     public function assertValue($value, ?string $valueName = null, ?string $message = null): void
     {
-        static::assert($this->array, $value, $valueName, $this->strict, $message);
+        static::assert($this->array, $value, $this->strict, $valueName, $message);
     }
 
     /**
      * @param array       $array
-     * @param             $value
+     * @param mixed       $value
+     * @param bool|null   $strict
      * @param string|null $valueName
-     * @param bool        $strict
      * @param string|null $message
      * @throws ConstraintViolationException
      */
     public static function assert(
         array $array,
-        $value,
+        mixed $value,
+        ?bool $strict = null,
         ?string $valueName = null,
-        bool $strict = self::DEFAULT_STRICT,
         ?string $message = null
     ): void {
         $errors = [];
-        if (!static::isValid($array, $value, $valueName, $strict, $errors)) {
+        if (!static::isValid($array, $value, $strict, $valueName, $errors)) {
             throw new ConstraintViolationException(static::class, $value, $valueName, $errors, $message);
         }
     }
@@ -136,30 +123,34 @@ class IsInArray extends AbstractConstraint
      */
     public function serialize(): string
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         return \serialize([0 => $this->array, 1 => $this->strict]);
     }
 
     /**
      * @inheritDoc
      */
-    public function unserialize($data)
+    public function unserialize(mixed $data): void
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        $tmpArray = \unserialize($data);
+        $tmpArray = \unserialize($data, ['allowed_class' => false]);
         $this->array = $tmpArray[0];
         $this->strict = $tmpArray[1];
     }
 
+    /**
+     * @return array
+     */
     public function __serialize(): array
     {
         return [$this->array, $this->strict];
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function __unserialize(array $data): void
     {
         $this->array = $data[0];
         $this->strict = $data[1];
     }
-
 }

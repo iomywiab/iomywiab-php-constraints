@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsLess.php
- * Class name...: IsLess.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:00
+ * Last modified: 2022-05-13 22:56:41
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -19,30 +19,21 @@ declare(strict_types=1);
 namespace iomywiab\iomywiab_php_constraints\constraints\parameterized;
 
 use iomywiab\iomywiab_php_constraints\AbstractConstraint;
-use iomywiab\iomywiab_php_constraints\constraints\simple\IsNumeric;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
 
 /**
- * Class maximum
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 class IsLess extends AbstractConstraint
 {
     /**
-     * @var int|float
-     */
-    private $maximum;
-
-    /**
      * Maximum constructor.
-     * @param int|float $maximum
+     * @param float|int $maximum
      * @throws ConstraintViolationException
      */
-    public function __construct($maximum)
+    public function __construct(private /*readonly (but serializable)*/ float|int $maximum)
     {
-        IsNumeric::assert($maximum);
-
-        $this->maximum = $maximum;
+        // no code
     }
 
     /**
@@ -63,24 +54,24 @@ class IsLess extends AbstractConstraint
     }
 
     /**
-     * @param int|float   $maximum
-     * @param             $value
-     * @param string|null $valueName
-     * @param array|null  $errors
+     * @param float|int              $maximum
+     * @param mixed                  $value
+     * @param string|null            $valueName
+     * @param array<int,string>|null $errors
      * @return bool
      * @throws ConstraintViolationException
      */
-    public static function isValid($maximum, $value, ?string $valueName = null, array &$errors = null): bool
-    {
-        IsNumeric::assert($maximum);
-
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+    public static function isValid(
+        float|int $maximum,
+        mixed $value,
+        ?string $valueName = null,
+        array &$errors = null
+    ): bool {
         if (\is_numeric($value) && ($value < $maximum)) {
             return true;
         }
 
         if (null !== $errors) {
-            /** @noinspection PhpFullyQualifiedNameUsageInspection */
             $format = 'Numeric value smaller than maximum [%' . (\is_int($maximum) ? 'd' : 'f') . '] expected';
             $errors[] = self::toErrorMessage($value, $valueName, $format, $maximum);
         }
@@ -90,21 +81,21 @@ class IsLess extends AbstractConstraint
     /**
      * @inheritDoc
      */
-    public function assertValue($value, ?string $valueName = null, ?string $message = null): void
+    public function assertValue(mixed $value, ?string $valueName = null, ?string $message = null): void
     {
         static::assert($this->maximum, $value, $valueName, $message);
     }
 
     /**
-     * @param int|float   $maximum
-     * @param             $value
+     * @param float|int   $maximum
+     * @param mixed       $value
      * @param string|null $valueName
      * @param string|null $message
      * @throws ConstraintViolationException
      */
     public static function assert(
-        $maximum,
-        $value,
+        float|int $maximum,
+        mixed $value,
         ?string $valueName = null,
         ?string $message = null
     ): void {
@@ -119,24 +110,29 @@ class IsLess extends AbstractConstraint
      */
     public function serialize(): string
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         return \serialize($this->maximum);
     }
 
     /**
      * @inheritDoc
      */
-    public function unserialize($data)
+    public function unserialize(mixed $data): void
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        $this->maximum = \unserialize($data);
+        $this->maximum = \unserialize($data, ['allowed_class' => false]);
     }
 
+    /**
+     * @return array
+     */
     public function __serialize(): array
     {
         return [$this->maximum];
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function __unserialize(array $data): void
     {
         $this->maximum = $data[0];

@@ -1,119 +1,61 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsBoolStringTest.php
- * Class name...: IsBoolStringTest.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:34
+ * Last modified: 2022-05-13 20:21:34
+ * Version......: v2
  */
 
 declare(strict_types=1);
 
 namespace iomywiab\iomywiab_php_constraints_tests\parameterized;
 
-use Exception;
 use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsBoolString;
-use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
-use iomywiab\iomywiab_php_constraints\Format;
-use iomywiab\iomywiab_php_constraints_tests\ConstraintTestCase;
-use PHPUnit\Framework\ExpectationFailedException;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use iomywiab\iomywiab_php_constraints_testtools\ConstraintTestCase;
+use iomywiab\iomywiab_php_constraints_testtools\TestValues;
 
 /**
- * Class IsBoolStringTest
- * @package iomywiab\iomywiab_php_constraints_tests
  */
 class IsBoolStringTest extends ConstraintTestCase
 {
     /**
-     * @throws ExpectationFailedException
-     * @throws InvalidArgumentException
-     * @throws ConstraintViolationException
+     * @param mixed $name
+     * @param array $data
+     * @param mixed $dataName
      */
-    public function testIsValid(): void
-    {
-        $this->checkConstraint(
-            new IsBoolString(),
-            //array_keys(IsBoolString::DEFAULT_BOOLEAN_STRINGS),
-            [
-                Format::TRUE_STRING,
-                Format::FALSE_STRING,
-                '1',
-                '0',
-                'on',
-                'off',
-                'yes',
-                'no',
-                'y',
-                'n',
-                'enabled',
-                'disabled',
-                'activated',
-                'deactivated',
-                'active',
-                'inactive'
-            ],
-            ['TRUE', 'FALSE']
-        );
-        $this->checkConstraint(
-            new IsBoolString(null),
-            //array_keys(IsBoolString::DEFAULT_BOOLEAN_STRINGS),
-            [
-                Format::TRUE_STRING,
-                Format::FALSE_STRING,
-                '1',
-                '0',
-                'on',
-                'off',
-                'yes',
-                'no',
-                'y',
-                'n',
-                'enabled',
-                'disabled',
-                'activated',
-                'deactivated',
-                'active',
-                'inactive'
-            ],
-            ['TRUE', 'FALSE']
-        );
-    }
+    public function __construct(
+        mixed $name = null,
+        array $data = [],
+        mixed $dataName = ''
+    ) {
+        $validSamples = [
+            'true',
+            'false',
+            '1',
+            '0',
+            'on',
+            'off',
+            'yes',
+            'no',
+            'y',
+            'n',
+            'enabled',
+            'disabled',
+            'activated',
+            'deactivated',
+            'active',
+            'inactive'
+        ];
+        $testValues = new TestValues($validSamples, ['TRUE', 'FALSE']);
 
-    /**
-     * @throws ConstraintViolationException
-     * @throws Exception
-     */
-    public function testAssert(): void
-    {
-        self::expectException(ConstraintViolationException::class);
-        try {
-            IsBoolString::assert('true');
-            IsBoolString::assert('false');
-            IsBoolString::assert('1');
-            IsBoolString::assert('0');
-            IsBoolString::assert('on');
-            IsBoolString::assert('off');
-            IsBoolString::assert('yes');
-            IsBoolString::assert('no');
-            IsBoolString::assert('y');
-            IsBoolString::assert('n');
-            IsBoolString::assert('enabled');
-            IsBoolString::assert('disabled');
-            IsBoolString::assert('activated');
-            IsBoolString::assert('deactivated');
-            IsBoolString::assert('active');
-            IsBoolString::assert('inactive');
-        } catch (Exception $cause) {
-            throw new Exception('Unexpected exception', 0, $cause);
-        }
-        IsBoolString::assert('x');
+        parent::__construct(new IsBoolString(), $testValues, false, $name, $data, $dataName);
     }
 }

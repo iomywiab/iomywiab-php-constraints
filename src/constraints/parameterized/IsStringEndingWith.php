@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsStringEndingWith.php
- * Class name...: IsStringEndingWith.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:32
+ * Last modified: 2022-05-13 22:56:41
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -23,54 +23,49 @@ use iomywiab\iomywiab_php_constraints\constraints\simple\IsStringNotEmpty;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
 
 /**
- * Class Numeric
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 class IsStringEndingWith extends AbstractConstraint
 {
-
-    /**
-     * @var string
-     */
-    private $endString;
-
     /**
      * Instance constructor.
      * @param string $endString
      * @throws ConstraintViolationException
      */
-    public function __construct(string $endString)
+    public function __construct(private /*readonly (but serializable)*/ string $endString)
     {
         IsStringNotEmpty::assert($endString);
-        $this->endString = $endString;
     }
 
     /**
      * @inheritDoc
      */
-    public function isValidValue($value, ?string $valueName = null, array &$errors = null): bool
+    public function isValidValue(mixed $value, ?string $valueName = null, array &$errors = null): bool
     {
         return static::isValid($this->endString, $value, $valueName, $errors);
     }
 
     /**
-     * @param string      $endString
-     * @param             $value
-     * @param string|null $valueName
-     * @param array|null  $errors
+     * @param string                 $endString
+     * @param mixed                  $value
+     * @param string|null            $valueName
+     * @param array<int,string>|null $errors
      * @return bool
      */
-    public static function isValid(string $endString, $value, ?string $valueName = null, array &$errors = null): bool
-    {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+    public static function isValid(
+        string $endString,
+        mixed $value,
+        ?string $valueName = null,
+        array &$errors = null
+    ): bool {
         if (\is_string($value)) {
-            /** @noinspection PhpFullyQualifiedNameUsageInspection */
             $lenEnd = \strlen($endString);
-            /** @noinspection PhpFullyQualifiedNameUsageInspection */
             $lenValue = \strlen($value);
             $expectedPos = $lenValue - $lenEnd;
-            if ((0 <= $expectedPos) && ($expectedPos <= $lenValue)
-                && ($expectedPos === strpos($value, $endString, $expectedPos))) {
+            if (
+                (0 <= $expectedPos) && ($expectedPos <= $lenValue)
+                && ($expectedPos === strpos($value, $endString, $expectedPos))
+            ) {
                 return true;
             }
         }
@@ -85,21 +80,21 @@ class IsStringEndingWith extends AbstractConstraint
     /**
      * @inheritDoc
      */
-    public function assertValue($value, ?string $valueName = null, ?string $message = null): void
+    public function assertValue(mixed $value, ?string $valueName = null, ?string $message = null): void
     {
         static::assert($this->endString, $value, $valueName, $message);
     }
 
     /**
      * @param string      $endString
-     * @param             $value
+     * @param mixed       $value
      * @param string|null $valueName
      * @param string|null $message
      * @throws ConstraintViolationException
      */
     public static function assert(
         string $endString,
-        $value,
+        mixed $value,
         ?string $valueName = null,
         ?string $message = null
     ): void {
@@ -114,27 +109,31 @@ class IsStringEndingWith extends AbstractConstraint
      */
     public function serialize(): string
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         return \serialize($this->endString);
     }
 
     /**
      * @inheritDoc
      */
-    public function unserialize($data)
+    public function unserialize(mixed $data): void
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        $this->endString = \unserialize($data);
+        $this->endString = \unserialize($data, ['allowed_class' => false]);
     }
 
+    /**
+     * @return string[]
+     */
     public function __serialize(): array
     {
         return [$this->endString];
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function __unserialize(array $data): void
     {
         $this->endString = $data[0];
     }
-
 }

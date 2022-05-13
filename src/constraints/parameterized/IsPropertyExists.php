@@ -1,29 +1,27 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsPropertyExists.php
- * Class name...: IsPropertyExists.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:00
+ * Last modified: 2022-05-13 22:56:42
+ * Version......: v2
  */
 
 declare(strict_types=1);
 
 namespace iomywiab\iomywiab_php_constraints\constraints\parameterized;
 
-use iomywiab\iomywiab_php_constraints\constraints\simple\IsTrue;
-use iomywiab\iomywiab_php_constraints\Format;
+use iomywiab\iomywiab_php_constraints\formatter\complex\Format;
 
 /**
- * Class Enum
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 class IsPropertyExists extends AbstractObjectOrClassnameConstraint
 {
@@ -31,12 +29,12 @@ class IsPropertyExists extends AbstractObjectOrClassnameConstraint
      * @inheritDoc
      * @noinspection PhpMissingParentCallCommonInspection
      */
-    public static function isValid($objectOrClass, $value, ?string $valueName = null, array &$errors = null): bool
-    {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        IsTrue::assert(\is_object($objectOrClass) || \is_string($objectOrClass));
-
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+    public static function isValid(
+        object|string $objectOrClass,
+        mixed $value,
+        ?string $valueName = null,
+        array &$errors = null
+    ): bool {
         if (\is_string($value) && \property_exists($objectOrClass, $value)) {
             return true;
         }

@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsStringStartingWithTest.php
- * Class name...: IsStringStartingWithTest.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:34
+ * Last modified: 2022-05-05 23:31:17
+ * Version......: v2
  */
 
 /** @noinspection SpellCheckingInspection */
@@ -20,46 +20,29 @@ declare(strict_types=1);
 
 namespace iomywiab\iomywiab_php_constraints_tests\parameterized;
 
-use Exception;
 use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsStringStartingWith;
-use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
-use iomywiab\iomywiab_php_constraints_tests\ConstraintTestCase;
-use PHPUnit\Framework\ExpectationFailedException;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use iomywiab\iomywiab_php_constraints_testtools\ConstraintTestCase;
+use iomywiab\iomywiab_php_constraints_testtools\TestValues;
 
 /**
- * Class IsBoolStringTest
- * @package iomywiab\iomywiab_php_constraints_tests
  */
 class IsStringStartingWithTest extends ConstraintTestCase
 {
     /**
-     * @throws ExpectationFailedException
-     * @throws InvalidArgumentException
-     * @throws ConstraintViolationException
+     * @param mixed $name
+     * @param array $data
+     * @param mixed $dataName
      */
-    public function testIsValid(): void
-    {
-        $this->checkConstraint(
-            new IsStringStartingWith('abc'),
-            ['abc', 'abcx'],
-            ['xabc', 'xabcx']
-        );
-    }
+    public function __construct(
+        mixed $name = null,
+        array $data = [],
+        mixed $dataName = ''
+    ) {
+        $constraint = new IsStringStartingWith('abc');
+        $validSamples = ['abc', 'abcx'];
+        $invalidSamples = ['xabc', 'xabcx'];
 
-    /**
-     * @throws ConstraintViolationException
-     * @throws Exception
-     */
-    public function testAssert(): void
-    {
-        self::expectException(ConstraintViolationException::class);
-        try {
-            IsStringStartingWith::assert('abc', 'abc');
-            IsStringStartingWith::assert('abc', 'abcx');
-        } catch (Exception $cause) {
-            throw new Exception('Unexpected exception', 0, $cause);
-        }
-        IsStringStartingWith::assert('abc', 'xabc');
+        $testValues = new TestValues($validSamples, $invalidSamples);
+        parent::__construct($constraint, $testValues, false, $name, $data, $dataName);
     }
 }

@@ -1,64 +1,44 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsInRangeTest.php
- * Class name...: IsInRangeTest.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:34
+ * Last modified: 2022-05-05 23:31:34
+ * Version......: v2
  */
 
 declare(strict_types=1);
 
 namespace iomywiab\iomywiab_php_constraints_tests\parameterized;
 
-use Exception;
 use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsInRange;
-use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
-use iomywiab\iomywiab_php_constraints_tests\ConstraintTestCase;
-use PHPUnit\Framework\ExpectationFailedException;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use iomywiab\iomywiab_php_constraints_testtools\ConstraintTestCase;
+use iomywiab\iomywiab_php_constraints_testtools\TestValues;
 
 /**
- * Class IsGreaterTest
- * @package iomywiab\iomywiab_php_constraints_tests
  */
 class IsInRangeTest extends ConstraintTestCase
 {
-
     /**
-     * @throws ExpectationFailedException
-     * @throws InvalidArgumentException
-     * @throws ConstraintViolationException
+     * @param mixed $name
+     * @param array $data
+     * @param mixed $dataName
      */
-    public function testIsValid(): void
-    {
-        $this->checkConstraint(
-            new IsInRange(2, 6),
-            [2, 2.0, 6, 6.0],
-            [1.99, 6.01, 7]
-        );
-    }
+    public function __construct(
+        mixed $name = null,
+        array $data = [],
+        mixed $dataName = ''
+    ) {
+        $validSamples = [2, 2.0, 6, 6.0, 2.3, '2.3'];
+        $testValues = new TestValues($validSamples, [1.99, 6.01, 7]);
 
-    /**
-     * @throws ConstraintViolationException
-     * @throws Exception
-     */
-    public function testAssert(): void
-    {
-        self::expectException(ConstraintViolationException::class);
-        try {
-            IsInRange::assert(2, 3, 3);
-            IsInRange::assert(2, 3, 2.01);
-        } catch (Exception $cause) {
-            throw new Exception('Unexpected exception', 0, $cause);
-        }
-        IsInRange::assert(2, 3, 1);
+        parent::__construct(new IsInRange(2, 6), $testValues, false, $name, $data, $dataName);
     }
 }

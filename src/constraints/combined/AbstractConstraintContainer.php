@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: AbstractConstraintContainer.php
- * Class name...: AbstractConstraintContainer.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:00
+ * Last modified: 2022-05-13 22:56:41
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -25,24 +25,22 @@ use iomywiab\iomywiab_php_constraints\interfaces\ConstraintContainerInterface;
 use iomywiab\iomywiab_php_constraints\interfaces\ConstraintInterface;
 
 /**
- * Class AbstractConstraintContainer
- *
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 class AbstractConstraintContainer extends AbstractConstraint implements ConstraintContainerInterface
 {
     /**
-     * @var ConstraintInterface[]|null
+     * @var array<int,ConstraintInterface>|null
      */
-    protected $constraints;
+    protected ?array $constraints;
 
     /**
      * AbstractConstraintContainer constructor.
      *
-     * @param ConstraintInterface|ConstraintInterface[]|null $constraints
+     * @param ConstraintInterface|array<array-key,ConstraintInterface>|null $constraints
      * @throws ConstraintViolationException
      */
-    public function __construct($constraints = null)
+    public function __construct(array|ConstraintInterface|null $constraints = null)
     {
         if (null !== $constraints) {
             $this->add($constraints);
@@ -52,25 +50,24 @@ class AbstractConstraintContainer extends AbstractConstraint implements Constrai
     /**
      * @inheritDoc
      */
-    public function add($constraints): ConstraintContainerInterface
+    public function add(ConstraintInterface|array|null $constraints): ConstraintContainerInterface
     {
         if ((null === $constraints) || ([] === $constraints)) {
             return $this;
         }
 
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         $addMultiple = \is_array($constraints);
         if (!$addMultiple) {
             $constraints = [$constraints];
         }
 
+        /** @var array<int,ConstraintInterface> $constraints */
         foreach ($constraints as $constraint) {
             IsImplementingInterface::assert(ConstraintInterface::class, $constraint);
         }
 
         if (isset($this->constraints)) {
             foreach ($constraints as $key => $constraint) {
-                /** @noinspection PhpFullyQualifiedNameUsageInspection */
                 if (\is_int($key) && (0 > $key)) {
                     // if a pre-defined key is specified then we use it
                     $this->constraints[$key] = $constraint;
@@ -89,7 +86,7 @@ class AbstractConstraintContainer extends AbstractConstraint implements Constrai
     /**
      * @inheritDoc
      */
-    public function isValidValue($value, ?string $valueName = null, array &$errors = null): bool
+    public function isValidValue(mixed $value, ?string $valueName = null, array &$errors = null): bool
     {
         return static::isValid($this->constraints ?? null, $value, $valueName, $errors);
 //        try {
@@ -104,20 +101,26 @@ class AbstractConstraintContainer extends AbstractConstraint implements Constrai
     }
 
     /**
-     * @param ConstraintInterface[]|null $constraints
-     * @param                            $value
-     * @param string|null                $valueName
-     * @param array|null                 $errors
+     * @param array<int,ConstraintInterface>|null $constraints
+     * @param mixed                               $value
+     * @param string|null                         $valueName
+     * @param array<int,string>|null              $errors
      * @return bool
      * @throws ConstraintViolationException
      */
-    public static function isValid(?array $constraints, $value, ?string $valueName = null, array &$errors = null): bool
-    {
+    public static function isValid(
+        ?array $constraints,
+        mixed $value,
+        ?string $valueName = null,
+        array &$errors = null
+    ): bool {
         $isValid = true;
         if (isset($constraints)) {
             foreach ($constraints as $constraint) {
-                if (!IsImplementingInterface::isValid(ConstraintInterface::class, $constraint)
-                    || !$constraint->isValidValue($value)) {
+                if (
+                    !IsImplementingInterface::isValid(ConstraintInterface::class, $constraint)
+                    || !$constraint->isValidValue($value)
+                ) {
                     $isValid = false;
                     break;
                 }
@@ -139,20 +142,24 @@ class AbstractConstraintContainer extends AbstractConstraint implements Constrai
     /**
      * @inheritDoc
      */
-    public function assertValue($value, ?string $valueName = null, ?string $message = null): void
+    public function assertValue(mixed $value, ?string $valueName = null, ?string $message = null): void
     {
         static::assert($this->constraints ?? null, $value, $valueName, $message);
     }
 
     /**
-     * @param ConstraintInterface[]|null $constraints
-     * @param                            $value
-     * @param string|null                $valueName
-     * @param string|null                $message
+     * @param array<int,ConstraintInterface>|null $constraints
+     * @param mixed                               $value
+     * @param string|null                         $valueName
+     * @param string|null                         $message
      * @throws ConstraintViolationException
      */
-    public static function assert(?array $constraints, $value, ?string $valueName = null, ?string $message = null): void
-    {
+    public static function assert(
+        ?array $constraints,
+        mixed $value,
+        ?string $valueName = null,
+        ?string $message = null
+    ): void {
         $errors = [];
         if (!static::isValid($constraints, $value, $valueName, $errors)) {
             throw new ConstraintViolationException(static::class, $value, $valueName, $errors, $message);
@@ -176,25 +183,31 @@ class AbstractConstraintContainer extends AbstractConstraint implements Constrai
     /**
      * @inheritDoc
      */
-    public function unserialize($data): void
+    public function unserialize(mixed $data): void
     {
         $this->constraints = [];
-        $items = unserialize($data);
+        $items = unserialize($data, ['allowed_class' => false]);
         if (null !== $items) {
             foreach ($items as $key => $constraint) {
-                $this->constraints[$key] = unserialize($constraint);
+                $this->constraints[$key] = unserialize($constraint, ['allowed_class' => true]);
             }
         }
     }
 
+    /**
+     * @return array
+     */
     public function __serialize(): array
     {
         return $this->constraints ?? [];
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function __unserialize(array $data): void
     {
         $this->constraints = $data;
     }
-
 }

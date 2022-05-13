@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: AbstractSimpleConstraint.php
- * Class name...: AbstractSimpleConstraint.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:00
+ * Last modified: 2022-05-13 22:56:41
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -23,16 +23,14 @@ use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
 use iomywiab\iomywiab_php_constraints\interfaces\SimpleConstraintInterface;
 
 /**
- * Class AbstractConstraint
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 abstract class AbstractSimpleConstraint extends AbstractConstraint implements SimpleConstraintInterface
 {
-
     /**
      * @inheritDoc
      */
-    public function isValidValue($value, ?string $valueName = null, array &$errors = null): bool
+    public function isValidValue(mixed $value, ?string $valueName = null, array &$errors = null): bool
     {
         return static::isValid($value, $valueName, $errors);
     }
@@ -40,7 +38,7 @@ abstract class AbstractSimpleConstraint extends AbstractConstraint implements Si
     /**
      * @inheritDoc
      */
-    public function assertValue($value, ?string $valueName = null, ?string $message = null): void
+    public function assertValue(mixed $value, ?string $valueName = null, ?string $message = null): void
     {
         static::assert($value, $valueName, $message);
     }
@@ -48,7 +46,7 @@ abstract class AbstractSimpleConstraint extends AbstractConstraint implements Si
     /**
      * @inheritDoc
      */
-    public static function assert($value, ?string $valueName = null, ?string $message = null): void
+    public static function assert(mixed $value, ?string $valueName = null, ?string $message = null): void
     {
         $errors = [];
         if (!static::isValid($value, $valueName, $errors)) {
@@ -61,23 +59,35 @@ abstract class AbstractSimpleConstraint extends AbstractConstraint implements Si
      */
     public function serialize(): string
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         return \serialize(null);
     }
 
     /**
      * @inheritDoc
      */
-    public function unserialize($data)
+    public function unserialize(mixed $data): void
     {
         // no code
     }
 
-    public function __serialize(): array {
+    /**
+     * Even though this method actually does nothing it is required to avoid PHP 8 error warnings.
+     * @return array
+     * @noinspection SenselessMethodDuplicationInspection
+     */
+    public function __serialize(): array
+    {
         return [];
     }
 
-    public function __unserialize(array $data): void {
+    /**
+     * Even though this method actually does nothing it is required to avoid PHP 8 error warnings.
+     * @param array $data
+     * @return void
+     * @noinspection SenselessMethodDuplicationInspection
+     */
+    public function __unserialize(array $data): void
+    {
         // no code
     }
 }

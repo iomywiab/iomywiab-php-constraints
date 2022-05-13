@@ -1,46 +1,44 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsBooleanOrBoolStringOrNull.php
- * Class name...: IsBooleanOrBoolStringOrNull.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:32
+ * Last modified: 2022-05-13 22:56:42
+ * Version......: v2
  */
 
 declare(strict_types=1);
 
 namespace iomywiab\iomywiab_php_constraints\constraints\parameterized;
 
-use iomywiab\iomywiab_php_constraints\Format;
+use iomywiab\iomywiab_php_constraints\formatter\complex\Format;
 
 /**
- * Class StandardBoolString
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 class IsBooleanOrBoolStringOrNull extends IsBoolString
 {
     /**
-     * @param array       $lowercaseStrings
-     * @param             $value
-     * @param string|null $valueName
-     * @param array|null  $errors
+     * @param mixed                   $value
+     * @param array<string,bool>|null $lowercaseStrings
+     * @param string|null             $valueName
+     * @param array<int,string>|null  $errors
      * @return bool
      */
     public static function isValid(
-        $value,
+        mixed $value,
+        ?array $lowercaseStrings = null,
         ?string $valueName = null,
-        array $lowercaseStrings = self::DEFAULT_BOOLEAN_STRINGS,
         array &$errors = null
     ): bool {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        if ((null === $value) || \is_bool($value) || parent::isValid($value)) {
+        if ((null === $value) || \is_bool($value) || parent::isValid($value, $lowercaseStrings)) {
             return true;
         }
 
@@ -50,10 +48,9 @@ class IsBooleanOrBoolStringOrNull extends IsBoolString
                 $value,
                 $valueName,
                 $format,
-                Format::toValueList(array_keys($lowercaseStrings))
+                Format::toValueList(array_keys($lowercaseStrings ?? self::DEFAULT_BOOLEAN_STRINGS))
             );
         }
         return false;
     }
-
 }

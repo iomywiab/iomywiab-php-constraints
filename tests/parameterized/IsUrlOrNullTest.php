@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsUrlOrNullTest.php
- * Class name...: IsUrlOrNullTest.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:33
+ * Last modified: 2022-05-13 20:13:19
+ * Version......: v2
  */
 
 /** @noinspection HttpUrlsUsage */
@@ -20,62 +20,56 @@ declare(strict_types=1);
 
 namespace iomywiab\iomywiab_php_constraints_tests\parameterized;
 
-use Exception;
 use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsUrl;
 use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsUrlOrNull;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
-use iomywiab\iomywiab_php_constraints_tests\ConstraintTestCase;
-use PHPUnit\Framework\ExpectationFailedException;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use iomywiab\iomywiab_php_constraints_testtools\ConstraintTestCase;
+use iomywiab\iomywiab_php_constraints_testtools\TestValues;
 
 /**
- * Class IsUrlTest
- * @package iomywiab\iomywiab_php_constraints_tests
  */
 class IsUrlOrNullTest extends ConstraintTestCase
 {
     /**
-     * @throws ExpectationFailedException
-     * @throws InvalidArgumentException
-     * @throws ConstraintViolationException
+     * @param mixed $name
+     * @param array $data
+     * @param mixed $dataName
      */
-    public function testIsValid(): void
-    {
-        $this->checkConstraint(
-            new IsUrlOrNull(),
-            ['http://github.com', 'http://github.com:80', 'ftp://ftp.github.com', 'funny://not.github.com', null],
-            ['//github.com']
-        );
+    public function __construct(
+        mixed $name = null,
+        array $data = [],
+        mixed $dataName = ''
+    ) {
+        $constraint = new IsUrlOrNull();
+        $validSamples = [
+            'http://github.com',
+            'http://github.com:80',
+            'ftp://ftp.github.com',
+            'funny://not.github.com',
+            null
+        ];
+        $invalidSamples = ['//github.com'];
+
+        $testValues = new TestValues($validSamples, $invalidSamples);
+        parent::__construct($constraint, $testValues, false, $name, $data, $dataName);
     }
 
     /**
-     * @throws ConstraintViolationException
-     * @throws Exception
+     * @return void
      */
-    public function testAssert(): void
-    {
-        IsUrlOrNull::assert(null);
-        IsUrlOrNull::assert('http://github.com');
-        IsUrlOrNull::assert('ftp://ftp.github.com');
-        IsUrlOrNull::assert('funny://not.github.com');
-
-        self::expectException(ConstraintViolationException::class);
-        IsUrlOrNull::assert('//github.com');
-    }
-
     public function testInvalidScheme(): void
     {
         $this->checkInvalid('ftp://github.com');
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      */
-    protected function checkInvalid($value): void
+    protected function checkInvalid(mixed $value): void
     {
-        self::expectException(ConstraintViolationException::class);
+        $this->expectException(ConstraintViolationException::class);
         $constraint = $this->getTestUrl();
-        $constraint->assertValue($value, strval($value));
+        $constraint->assertValue($value, (string)$value);
     }
 
     /**
@@ -84,17 +78,24 @@ class IsUrlOrNullTest extends ConstraintTestCase
      */
     protected function getTestUrl(): IsUrl
     {
-        return (new IsUrlOrNull())
-            ->setSchemes(['http', 'https'])
-            ->setHosts(['github.com', 'www.github.com'])
-            ->setPorts([80, 443]);
+        return new IsUrlOrNull(
+            ['http', 'https'],
+            ['github.com', 'www.github.com'],
+            [80, 443]
+        );
     }
 
+    /**
+     * @return void
+     */
     public function testInvalidHost(): void
     {
         $this->checkInvalid('http://www2.github.com');
     }
 
+    /**
+     * @return void
+     */
     public function testInvalidPort(): void
     {
         $this->checkInvalid('http://github.com:21');

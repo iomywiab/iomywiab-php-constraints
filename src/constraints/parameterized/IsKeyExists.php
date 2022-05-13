@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsKeyExists.php
- * Class name...: IsKeyExists.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:00
+ * Last modified: 2022-05-13 22:56:41
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -20,27 +20,20 @@ namespace iomywiab\iomywiab_php_constraints\constraints\parameterized;
 
 use iomywiab\iomywiab_php_constraints\AbstractConstraint;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
-use iomywiab\iomywiab_php_constraints\Format;
+use iomywiab\iomywiab_php_constraints\formatter\complex\Format;
 
 /**
- * Class Enum
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 class IsKeyExists extends AbstractConstraint
 {
-
-    /**
-     * @var array
-     */
-    private $array;
-
     /**
      * Instance constructor.
      * @param array $array
      */
-    public function __construct(array $array)
+    public function __construct(private /*readonly (but serializable)*/ array $array)
     {
-        $this->array = $array;
+        // no code
     }
 
     /**
@@ -52,15 +45,14 @@ class IsKeyExists extends AbstractConstraint
     }
 
     /**
-     * @param array       $array
-     * @param             $value
-     * @param string|null $valueName
-     * @param array|null  $errors
+     * @param array                  $array
+     * @param mixed                  $value
+     * @param string|null            $valueName
+     * @param array<int,string>|null $errors
      * @return bool
      */
-    public static function isValid(array $array, $value, ?string $valueName = null, array &$errors = null): bool
+    public static function isValid(array $array, mixed $value, ?string $valueName = null, array &$errors = null): bool
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         if ((\is_int($value) || \is_string($value)) && (isset($array[$value]) || \array_key_exists($value, $array))) {
             return true;
         }
@@ -75,19 +67,19 @@ class IsKeyExists extends AbstractConstraint
     /**
      * @inheritDoc
      */
-    public function assertValue($value, ?string $valueName = null, ?string $message = null): void
+    public function assertValue(mixed $value, ?string $valueName = null, ?string $message = null): void
     {
         static::assert($this->array, $value, $valueName, $message);
     }
 
     /**
      * @param array       $array
-     * @param             $value
+     * @param mixed       $value
      * @param string|null $valueName
      * @param string|null $message
      * @throws ConstraintViolationException
      */
-    public static function assert(array $array, $value, ?string $valueName = null, ?string $message = null): void
+    public static function assert(array $array, mixed $value, ?string $valueName = null, ?string $message = null): void
     {
         $errors = [];
         if (!static::isValid($array, $value, $valueName, $errors)) {
@@ -100,24 +92,29 @@ class IsKeyExists extends AbstractConstraint
      */
     public function serialize(): string
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         return \serialize($this->array);
     }
 
     /**
      * @inheritDoc
      */
-    public function unserialize($data)
+    public function unserialize(mixed $data): void
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        $this->array = \unserialize($data);
+        $this->array = \unserialize($data, ['allowed_class' => false]);
     }
 
+    /**
+     * @return array[]
+     */
     public function __serialize(): array
     {
         return [$this->array];
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function __unserialize(array $data): void
     {
         $this->array = $data[0];

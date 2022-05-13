@@ -1,66 +1,68 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: AbstractConstraint.php
- * Class name...: AbstractConstraint.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:32
+ * Last modified: 2022-05-13 22:56:43
+ * Version......: v2
  */
 
 declare(strict_types=1);
 
 namespace iomywiab\iomywiab_php_constraints;
 
+use iomywiab\iomywiab_php_constraints\formatter\complex\Format;
 use iomywiab\iomywiab_php_constraints\interfaces\ConstraintInterface;
 
 /**
- * Class AbstractConstraint
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 abstract class AbstractConstraint implements ConstraintInterface
 {
-
     /**
-     * @param             $value
+     * @param mixed       $value
      * @param string|null $valueName
      * @param string      $format used by vsprintf()
      * @return string
-     * @see Format::toErrorMessage()
+     * @see Format::toDebugString()
      * @noinspection SpellCheckingInspection
      */
-    protected static function toErrorMessage($value, ?string $valueName, string $format): string
+    protected static function toErrorMessage(mixed $value, ?string $valueName, string $format): string
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         $num = \func_num_args();
         if (3 < $num) {
-            /** @noinspection PhpFullyQualifiedNameUsageInspection */
             $arguments = \func_get_args();
-            unset($arguments[2]); // format
-            unset($arguments[1]); // valueName
-            unset($arguments[0]); // value
-            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            unset($arguments[2], $arguments[1], $arguments[0]); // format, valueName, value
             $format = \vsprintf($format, $arguments);
         }
-        return (empty($valueName) ? '' : $valueName . ': ')
+        return (null === $valueName || '' === $valueName ? '' : $valueName . ': ')
             . $format
-            . '. Got ' . Format::toDescription($value);
+            . '. Got ' . Format::toDebugString($value);
     }
 
+    /**
+     * Even though this method actually does nothing it is required to avoid PHP 8 error warnings.
+     * @return array
+     */
     public function __serialize(): array
     {
         return [];
     }
 
+    /**
+     * Even though this method actually does nothing it is required to avoid PHP 8 error warnings.
+     * @param array $data
+     * @return void
+     */
     public function __unserialize(array $data): void
     {
         // no code
     }
-
 }

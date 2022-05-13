@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsStringContaining.php
- * Class name...: IsStringContaining.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:32
+ * Last modified: 2022-05-13 22:56:41
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -23,47 +23,42 @@ use iomywiab\iomywiab_php_constraints\constraints\simple\IsStringNotEmpty;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
 
 /**
- * Class Numeric
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 class IsStringContaining extends AbstractConstraint
 {
-
-    /**
-     * @var string
-     */
-    private $subString;
-
     /**
      * Instance constructor.
      * @param string $subString
      * @throws ConstraintViolationException
      */
-    public function __construct(string $subString)
+    public function __construct(private /*readonly (but serializable)*/ string $subString)
     {
         IsStringNotEmpty::assert($subString);
-        $this->subString = $subString;
     }
 
     /**
      * @inheritDoc
      */
-    public function isValidValue($value, ?string $valueName = null, array &$errors = null): bool
+    public function isValidValue(mixed $value, ?string $valueName = null, array &$errors = null): bool
     {
         return static::isValid($this->subString, $value, $valueName, $errors);
     }
 
     /**
-     * @param string      $subString
-     * @param             $value
-     * @param string|null $valueName
-     * @param array|null  $errors
+     * @param string                 $subString
+     * @param mixed                  $value
+     * @param string|null            $valueName
+     * @param array<int,string>|null $errors
      * @return bool
      */
-    public static function isValid(string $subString, $value, ?string $valueName = null, array &$errors = null): bool
-    {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        if (\is_string($value) && (false !== \strpos($value, $subString))) {
+    public static function isValid(
+        string $subString,
+        mixed $value,
+        ?string $valueName = null,
+        array &$errors = null
+    ): bool {
+        if (\is_string($value) && (str_contains($value, $subString))) {
             return true;
         }
 
@@ -77,21 +72,21 @@ class IsStringContaining extends AbstractConstraint
     /**
      * @inheritDoc
      */
-    public function assertValue($value, ?string $valueName = null, ?string $message = null): void
+    public function assertValue(mixed $value, ?string $valueName = null, ?string $message = null): void
     {
         static::assert($this->subString, $value, $valueName, $message);
     }
 
     /**
      * @param string      $subString
-     * @param             $value
+     * @param mixed       $value
      * @param string|null $valueName
      * @param string|null $message
      * @throws ConstraintViolationException
      */
     public static function assert(
         string $subString,
-        $value,
+        mixed $value,
         ?string $valueName = null,
         ?string $message = null
     ): void {
@@ -106,27 +101,31 @@ class IsStringContaining extends AbstractConstraint
      */
     public function serialize(): string
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         return \serialize($this->subString);
     }
 
     /**
      * @inheritDoc
      */
-    public function unserialize($data)
+    public function unserialize(mixed $data): void
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        $this->subString = \unserialize($data);
+        $this->subString = \unserialize($data, ['allowed_class' => false]);
     }
 
+    /**
+     * @return string[]
+     */
     public function __serialize(): array
     {
         return [$this->subString];
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function __unserialize(array $data): void
     {
         $this->subString = $data[0];
     }
-
 }

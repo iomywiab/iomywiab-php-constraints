@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: AbstractObjectOrClassnameConstraint.php
- * Class name...: AbstractObjectOrClassnameConstraint.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:32
+ * Last modified: 2022-05-13 22:56:43
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -19,40 +19,28 @@ declare(strict_types=1);
 namespace iomywiab\iomywiab_php_constraints\constraints\parameterized;
 
 use iomywiab\iomywiab_php_constraints\AbstractConstraint;
-use iomywiab\iomywiab_php_constraints\constraints\simple\IsTrue;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
-use iomywiab\iomywiab_php_constraints\Format;
+use iomywiab\iomywiab_php_constraints\formatter\complex\Format;
 
 /**
- * Class AbstractObjectOrClassnameConstraint
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 abstract class AbstractObjectOrClassnameConstraint extends AbstractConstraint
 {
     /**
-     * @param mixed|string $value
-     * @param array|null   $errors
-     * @return bool
-     */
-    private $objectOrClass;
-
-    /**
      * IsArrayMaxCount constructor.
-     * @param $objectOrClass
+     * @param object|string $objectOrClass
      * @throws ConstraintViolationException
      */
-    public function __construct($objectOrClass)
+    public function __construct(private /*readonly (but serializable)*/ object|string $objectOrClass)
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        IsTrue::assert(\is_object($objectOrClass) || \is_string($objectOrClass));
-
-        $this->objectOrClass = $objectOrClass;
+        // no code
     }
 
     /**
      * @inheritDoc
      */
-    public function isValidValue($value, ?string $valueName = null, array &$errors = null): bool
+    public function isValidValue(mixed $value, ?string $valueName = null, array &$errors = null): bool
     {
         return static::isValid($this->objectOrClass, $value, $valueName, $errors);
 //        try {
@@ -67,23 +55,23 @@ abstract class AbstractObjectOrClassnameConstraint extends AbstractConstraint
     }
 
     /**
-     * @param             $objectOrClass
-     * @param             $value
+     * @param object|class-string       $objectOrClass
+     * @param mixed       $value
      * @param string|null $valueName
-     * @param array|null  $errors
+     * @param array<int,string>|null  $errors
      * @return bool
-     * @throws ConstraintViolationException
      */
     // @codeCoverageIgnoreStart
-    public static function isValid($objectOrClass, $value, ?string $valueName = null, array &$errors = null): bool
-    {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        IsTrue::assert(\is_object($objectOrClass) || \is_string($objectOrClass));
-
+    public static function isValid(
+        object|string $objectOrClass,
+        mixed $value,
+        ?string $valueName = null,
+        array &$errors = null
+    ): bool {
         if (null !== $errors) {
             $errors[] = 'Constraint [' . static::class . '] is incomplete: Method [isValid] is not overloaded. Value '
-                . Format::toDescription($value) . ' cannot be verified against '
-                . Format::toDescription($objectOrClass) . '';
+                . Format::toDebugString($value) . ' cannot be verified against '
+                . Format::toDebugString($objectOrClass);
         }
         return false;
     }
@@ -92,21 +80,21 @@ abstract class AbstractObjectOrClassnameConstraint extends AbstractConstraint
     /**
      * @inheritDoc
      */
-    public function assertValue($value, ?string $valueName = null, ?string $message = null): void
+    public function assertValue(mixed $value, ?string $valueName = null, ?string $message = null): void
     {
         static::assert($this->objectOrClass, $value, $valueName, $message);
     }
 
     /**
-     * @param             $objectOrClass
-     * @param             $value
-     * @param string|null $valueName
-     * @param string|null $message
+     * @param object|string $objectOrClass
+     * @param mixed         $value
+     * @param string|null   $valueName
+     * @param string|null   $message
      * @throws ConstraintViolationException
      */
     public static function assert(
-        $objectOrClass,
-        $value,
+        object|string $objectOrClass,
+        mixed $value,
         ?string $valueName = null,
         ?string $message = null
     ): void {
@@ -121,28 +109,32 @@ abstract class AbstractObjectOrClassnameConstraint extends AbstractConstraint
      */
     public function serialize(): string
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         return \serialize($this->objectOrClass);
     }
 
     /**
      * @inheritDoc
      */
-    public function unserialize($data)
+    public function unserialize(mixed $data): void
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        $this->objectOrClass = \unserialize($data);
+        $this->objectOrClass = \unserialize($data, ['allowed_class' => true]);
     }
 
 
+    /**
+     * @return array
+     */
     public function __serialize(): array
     {
         return [$this->objectOrClass];
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function __unserialize(array $data): void
     {
         $this->objectOrClass = $data[0];
     }
-
 }

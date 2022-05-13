@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsInRange.php
- * Class name...: IsInRange.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:00
+ * Last modified: 2022-05-13 22:56:41
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -19,40 +19,25 @@ declare(strict_types=1);
 namespace iomywiab\iomywiab_php_constraints\constraints\parameterized;
 
 use iomywiab\iomywiab_php_constraints\AbstractConstraint;
-use iomywiab\iomywiab_php_constraints\constraints\simple\IsNumeric;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
 
 /**
- * Class StandardUnsigned
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 class IsInRange extends AbstractConstraint
 {
     /**
-     * @var int|float
-     */
-    protected $maximum;
-
-    /**
-     * @var int|float
-     */
-    protected $minimum;
-
-    /**
      * Range constructor.
-     * @param int|float $minimum
-     * @param int|float $maximum
+     * @param float|int $minimum
+     * @param float|int $maximum
      * @throws ConstraintViolationException
      */
-    public function __construct($minimum, $maximum)
-    {
-        IsNumeric::assert($minimum);
-        IsNumeric::assert($maximum);
+    public function __construct(
+        private /*readonly (but serializable)*/ float|int $minimum,
+        private /*readonly (but serializable)*/ float|int $maximum
+    ) {
         IsGreaterOrEqual::assert($minimum, $maximum);
         IsLessOrEqual::assert($maximum, $minimum);
-
-        $this->minimum = $minimum;
-        $this->maximum = $maximum;
     }
 
     /**
@@ -73,30 +58,30 @@ class IsInRange extends AbstractConstraint
     }
 
     /**
-     * @param int|float   $minimum
-     * @param int|float   $maximum
-     * @param             $value
-     * @param string|null $valueName
-     * @param array|null  $errors
+     * @param float|int              $minimum
+     * @param float|int              $maximum
+     * @param mixed                  $value
+     * @param string|null            $valueName
+     * @param array<int,string>|null $errors
      * @return bool
      * @throws ConstraintViolationException
      */
-    public static function isValid($minimum, $maximum, $value, ?string $valueName = null, array &$errors = null): bool
-    {
-        IsNumeric::assert($minimum);
-        IsNumeric::assert($maximum);
+    public static function isValid(
+        float|int $minimum,
+        float|int $maximum,
+        mixed $value,
+        ?string $valueName = null,
+        array &$errors = null
+    ): bool {
         IsGreaterOrEqual::assert($minimum, $maximum);
         IsLessOrEqual::assert($maximum, $minimum);
 
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         if (\is_numeric($value) && ($minimum <= $value) && ($value <= $maximum)) {
             return true;
         }
 
         if (null !== $errors) {
-            /** @noinspection PhpFullyQualifiedNameUsageInspection */
             $minType = \is_int($minimum) ? 'd' : 'f';
-            /** @noinspection PhpFullyQualifiedNameUsageInspection */
             $maxType = \is_int($maximum) ? 'd' : 'f';
             $format = 'Numeric value in range [%' . $minType . ',%' . $maxType . '] expected';
             $errors[] = self::toErrorMessage($value, $valueName, $format, $minimum, $maximum);
@@ -113,17 +98,17 @@ class IsInRange extends AbstractConstraint
     }
 
     /**
-     * @param int|float   $minimum
-     * @param int|float   $maximum
-     * @param             $value
+     * @param float|int   $minimum
+     * @param float|int   $maximum
+     * @param mixed       $value
      * @param string|null $valueName
      * @param string|null $message
      * @throws ConstraintViolationException
      */
     public static function assert(
-        $minimum,
-        $maximum,
-        $value,
+        float|int $minimum,
+        float|int $maximum,
+        mixed $value,
         ?string $valueName = null,
         ?string $message = null
     ): void {
@@ -138,30 +123,34 @@ class IsInRange extends AbstractConstraint
      */
     public function serialize(): string
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         return \serialize([0 => $this->minimum, 1 => $this->maximum]);
     }
 
     /**
      * @inheritDoc
      */
-    public function unserialize($data)
+    public function unserialize(mixed $data): void
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        $both = \unserialize($data);
+        $both = \unserialize($data, ['allowed_class' => false]);
         $this->minimum = $both[0];
         $this->maximum = $both[1];
     }
 
+    /**
+     * @return array
+     */
     public function __serialize(): array
     {
         return [$this->minimum, $this->maximum];
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function __unserialize(array $data): void
     {
         $this->minimum = $data[0];
         $this->maximum = $data[1];
     }
-
 }

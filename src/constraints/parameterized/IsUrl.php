@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsUrl.php
- * Class name...: IsUrl.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:00
+ * Last modified: 2022-05-13 22:56:41
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -22,12 +22,10 @@ use iomywiab\iomywiab_php_constraints\AbstractConstraint;
 use iomywiab\iomywiab_php_constraints\constraints\simple\IsIntegerArrayOrNull;
 use iomywiab\iomywiab_php_constraints\constraints\simple\IsStringArrayOrNull;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
-use iomywiab\iomywiab_php_constraints\Format;
+use iomywiab\iomywiab_php_constraints\formatter\complex\Format;
 
 /**
- * Class Url
- *
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 class IsUrl extends AbstractConstraint
 {
@@ -36,120 +34,57 @@ class IsUrl extends AbstractConstraint
     private const SERIALIZE_PORTS = 3;
 
     /**
-     * @var string[]|null
-     */
-    private $schemes;
-
-    /**
-     * @var string[]|null
-     */
-    private $hosts;
-
-    /**
-     * @var int[]|null
-     */
-    private $ports;
-
-    /**
-     * Url constructor.
-     *
-     * @param string[]|null $schemes
-     * @param string[]|null $hosts
-     * @param int[]|null    $ports
+     * @param array<int,string>|null $schemes
+     * @param array<int,string>|null $hosts
+     * @param array<int,int>|null    $ports
      * @throws ConstraintViolationException
      */
-    public function __construct(?array $schemes = null, ?array $hosts = null, ?array $ports = null)
-    {
+    public function __construct(
+        private /* readonly (but serializable) */ ?array $schemes = null,
+        private /* readonly (but serializable) */ ?array $hosts = null,
+        private /* readonly (but serializable) */ ?array $ports = null
+    ) {
         IsStringArrayOrNull::assert($schemes);
         IsStringArrayOrNull::assert($hosts);
         IsIntegerArrayOrNull::assert($ports);
-        $this->schemes = $schemes;
-        $this->hosts = $hosts;
-        $this->ports = $ports;
-    }
-
-    /**
-     * @param string[]|null $schemes
-     * @return IsUrl
-     * @throws ConstraintViolationException
-     */
-    public function setSchemes(?array $schemes): self
-    {
-        IsStringArrayOrNull::assert($schemes);
-
-        $this->schemes = $schemes;
-
-        return $this;
-    }
-
-    /**
-     * @param string[]|null $hosts
-     * @return IsUrl
-     * @throws ConstraintViolationException
-     */
-    public function setHosts(?array $hosts): self
-    {
-        IsStringArrayOrNull::assert($hosts);
-
-        $this->hosts = $hosts;
-
-        return $this;
-    }
-
-    /**
-     * @param int[]|null $ports
-     * @return IsUrl
-     * @throws ConstraintViolationException
-     */
-    public function setPorts(?array $ports): self
-    {
-        IsIntegerArrayOrNull::assert($ports);
-
-        $this->ports = $ports;
-
-        return $this;
     }
 
     /**
      * @inheritDoc
      */
-    public function isValidValue($value, ?string $valueName = null, array &$errors = null): bool
+    public function isValidValue(mixed $value, ?string $valueName = null, array &$errors = null): bool
     {
         return static::isValid($value, $valueName, $this->schemes, $this->hosts, $this->ports, $errors);
     }
 
     /**
-     * @param               $value
-     * @param string|null   $valueName
-     * @param string[]|null $schemes
-     * @param string[]|null $hosts
-     * @param int[]|null    $ports
-     * @param array|null    $errors
+     * @param mixed                  $value
+     * @param array<int,string>|null $schemes
+     * @param array<int,string>|null $hosts
+     * @param array<int,int>|null    $ports
+     * @param string|null            $valueName
+     * @param array<int,string>|null $errors
      * @return bool
      * @noinspection PhpTooManyParametersInspection
+     * @noinspection OffsetOperationsInspection
      */
     public static function isValid(
-        $value,
-        ?string $valueName = null,
+        mixed $value,
         ?array $schemes = null,
         ?array $hosts = null,
         ?array $ports = null,
+        ?string $valueName = null,
         array &$errors = null
     ): bool {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         if (false !== \filter_var($value, FILTER_VALIDATE_URL)) {
             $isValid = true;
             if (isset($schemes) || isset($hosts) || isset($ports)) {
-                /** @noinspection PhpFullyQualifiedNameUsageInspection */
                 $parts = \parse_url($value);
-                /** @noinspection PhpFullyQualifiedNameUsageInspection */
-                if (isset($schemes) && isset($parts['scheme']) && !\in_array($parts['scheme'], $schemes)) {
+                if (isset($schemes, $parts['scheme']) && !\in_array($parts['scheme'], $schemes, true)) {
                     $isValid = false;
-                } /** @noinspection PhpFullyQualifiedNameUsageInspection */
-                elseif (isset($hosts) && isset($parts['host']) && !\in_array($parts['host'], $hosts)) {
+                } elseif (isset($hosts, $parts['host']) && !\in_array($parts['host'], $hosts, true)) {
                     $isValid = false;
-                } /** @noinspection PhpFullyQualifiedNameUsageInspection */
-                elseif (isset($ports) && isset($parts['port']) && !\in_array($parts['port'], $ports)) {
+                } elseif (isset($ports, $parts['port']) && !\in_array($parts['port'], $ports, true)) {
                     $isValid = false;
                 }
             }
@@ -159,11 +94,10 @@ class IsUrl extends AbstractConstraint
         }
 
         if (null !== $errors) {
-            /** @noinspection PhpFullyQualifiedNameUsageInspection */
-            if (false === \filter_var($value, FILTER_VALIDATE_URL)) {
-                $errors[] = self::toErrorMessage($value, $valueName, 'URL expected');
+            if (false !== \filter_var($value, FILTER_VALIDATE_URL)) {
+                self::addDetailErrors($value, $schemes, $hosts, $ports, $valueName, $errors);
             } else {
-                self::addDetailErrors($value, $valueName, $schemes, $hosts, $ports, $errors);
+                $errors[] = self::toErrorMessage($value, $valueName, 'URL expected');
             }
         }
 
@@ -171,36 +105,33 @@ class IsUrl extends AbstractConstraint
     }
 
     /**
-     * @param             $value
-     * @param string|null $valueName
-     * @param array|null  $schemes
-     * @param array|null  $hosts
-     * @param array|null  $ports
-     * @param array       $errors
+     * @param mixed                  $value
+     * @param array<int,string>|null $schemes
+     * @param array<int,string>|null $hosts
+     * @param array<int,int>|null    $ports
+     * @param string|null            $valueName
+     * @param array<int,string>      $errors
      * @noinspection PhpTooManyParametersInspection
+     * @noinspection OffsetOperationsInspection
      */
     protected static function addDetailErrors(
-        $value,
-        ?string $valueName,
+        mixed $value,
         ?array $schemes,
         ?array $hosts,
         ?array $ports,
+        ?string $valueName,
         array &$errors
-    ) {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
+    ): void {
         $parts = \parse_url($value);
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        if (isset($schemes) && isset($parts['scheme']) && !\in_array($parts['scheme'], $schemes)) {
+        if (isset($schemes, $parts['scheme']) && !\in_array($parts['scheme'], $schemes, true)) {
             $format = 'Scheme [%s] expected';
             $errors[] = self::toErrorMessage($value, $valueName, $format, Format::toValueList($schemes));
         }
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        if (isset($hosts) && isset($parts['host']) && !\in_array($parts['host'], $hosts)) {
+        if (isset($hosts, $parts['host']) && !\in_array($parts['host'], $hosts, true)) {
             $format = 'Host [%s] expected';
             $errors[] = self::toErrorMessage($value, $valueName, $format, Format::toValueList($hosts));
         }
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        if (isset($ports) && isset($parts['port']) && !\in_array($parts['port'], $ports)) {
+        if (isset($ports, $parts['port']) && !\in_array($parts['port'], $ports, true)) {
             $format = 'Port [%s] expected';
             $errors[] = self::toErrorMessage($value, $valueName, $format, Format::toValueList($ports));
         }
@@ -209,31 +140,31 @@ class IsUrl extends AbstractConstraint
     /**
      * @inheritDoc
      */
-    public function assertValue($value, ?string $valueName = null, ?string $message = null): void
+    public function assertValue(mixed $value, ?string $valueName = null, ?string $message = null): void
     {
-        static::assert($value, $valueName, $this->schemes, $this->hosts, $this->ports, $message);
+        static::assert($value, $this->schemes, $this->hosts, $this->ports, $valueName, $message);
     }
 
     /**
-     * @param               $value
-     * @param string|null   $valueName
-     * @param string[]|null $schemes
-     * @param string[]|null $hosts
-     * @param int[]|null    $ports
-     * @param string|null   $message
+     * @param mixed                  $value
+     * @param array<int,string>|null $schemes
+     * @param array<int,string>|null $hosts
+     * @param array<int,int>|null    $ports
+     * @param string|null            $valueName
+     * @param string|null            $message
      * @noinspection PhpTooManyParametersInspection
      * @throws ConstraintViolationException
      */
     public static function assert(
-        $value,
-        ?string $valueName = null,
+        mixed $value,
         ?array $schemes = null,
         ?array $hosts = null,
         ?array $ports = null,
+        ?string $valueName = null,
         ?string $message = null
     ): void {
         $errors = [];
-        if (!static::isValid($value, $valueName, $schemes, $hosts, $ports, $errors)) {
+        if (!static::isValid($value, $schemes, $hosts, $ports, $valueName, $errors)) {
             throw new ConstraintViolationException(static::class, $value, $valueName, $errors, $message);
         }
     }
@@ -243,15 +174,11 @@ class IsUrl extends AbstractConstraint
      */
     public function serialize(): string
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         return \serialize(
             [
-                /** @noinspection PhpFullyQualifiedNameUsageInspection */
                 self::SERIALIZE_SCHEMES => \serialize($this->schemes),
-                /** @noinspection PhpFullyQualifiedNameUsageInspection */
-                self::SERIALIZE_HOSTS   => \serialize($this->hosts),
-                /** @noinspection PhpFullyQualifiedNameUsageInspection */
-                self::SERIALIZE_PORTS   => \serialize($this->ports),
+                self::SERIALIZE_HOSTS => \serialize($this->hosts),
+                self::SERIALIZE_PORTS => \serialize($this->ports),
             ]
         );
     }
@@ -259,28 +186,30 @@ class IsUrl extends AbstractConstraint
     /**
      * @inheritDoc
      */
-    public function unserialize($data): void
+    public function unserialize(mixed $data): void
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        $items = \unserialize($data);
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        $this->schemes = \unserialize($items[self::SERIALIZE_SCHEMES]);
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        $this->hosts = \unserialize($items[self::SERIALIZE_HOSTS]);
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        $this->ports = \unserialize($items[self::SERIALIZE_PORTS]);
+        $items = \unserialize($data, ['allowed_class' => false]);
+        $this->schemes = \unserialize($items[self::SERIALIZE_SCHEMES], ['allowed_class' => false]);
+        $this->hosts = \unserialize($items[self::SERIALIZE_HOSTS], ['allowed_class' => false]);
+        $this->ports = \unserialize($items[self::SERIALIZE_PORTS], ['allowed_class' => false]);
     }
 
+    /**
+     * @return array
+     */
     public function __serialize(): array
     {
         return [$this->schemes, $this->hosts, $this->ports];
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function __unserialize(array $data): void
     {
         $this->schemes = $data[0];
         $this->hosts = $data[1];
         $this->ports = $data[2];
     }
-
 }

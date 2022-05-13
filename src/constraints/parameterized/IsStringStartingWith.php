@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsStringStartingWith.php
- * Class name...: IsStringStartingWith.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:32
+ * Last modified: 2022-05-13 22:56:41
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -23,47 +23,38 @@ use iomywiab\iomywiab_php_constraints\constraints\simple\IsStringNotEmpty;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
 
 /**
- * Class Numeric
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 class IsStringStartingWith extends AbstractConstraint
 {
-
-    /**
-     * @var string
-     */
-    private $prefix;
-
     /**
      * Instance constructor.
      * @param string $prefix
      * @throws ConstraintViolationException
      */
-    public function __construct(string $prefix)
+    public function __construct(private /*readonly (but serializable)*/ string $prefix)
     {
         IsStringNotEmpty::assert($prefix);
-        $this->prefix = $prefix;
     }
 
     /**
      * @inheritDoc
      */
-    public function isValidValue($value, ?string $valueName = null, array &$errors = null): bool
+    public function isValidValue(mixed $value, ?string $valueName = null, array &$errors = null): bool
     {
         return static::isValid($this->prefix, $value, $valueName, $errors);
     }
 
     /**
-     * @param string      $prefix
-     * @param             $value
-     * @param string|null $valueName
-     * @param array|null  $errors
+     * @param string                 $prefix
+     * @param mixed                  $value
+     * @param string|null            $valueName
+     * @param array<int,string>|null $errors
      * @return bool
      */
-    public static function isValid(string $prefix, $value, ?string $valueName = null, array &$errors = null): bool
+    public static function isValid(string $prefix, mixed $value, ?string $valueName = null, array &$errors = null): bool
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        if (\is_string($value) && (0 === \strpos($value, $prefix))) {
+        if (\is_string($value) && (str_starts_with($value, $prefix))) {
             return true;
         }
 
@@ -77,21 +68,21 @@ class IsStringStartingWith extends AbstractConstraint
     /**
      * @inheritDoc
      */
-    public function assertValue($value, ?string $valueName = null, ?string $message = null): void
+    public function assertValue(mixed $value, ?string $valueName = null, ?string $message = null): void
     {
         static::assert($this->prefix, $value, $valueName, $message);
     }
 
     /**
      * @param string      $prefix
-     * @param             $value
+     * @param mixed             $value
      * @param string|null $valueName
      * @param string|null $message
      * @throws ConstraintViolationException
      */
     public static function assert(
         string $prefix,
-        $value,
+        mixed $value,
         ?string $valueName = null,
         ?string $message = null
     ): void {
@@ -106,27 +97,31 @@ class IsStringStartingWith extends AbstractConstraint
      */
     public function serialize(): string
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         return \serialize($this->prefix);
     }
 
     /**
      * @inheritDoc
      */
-    public function unserialize($data)
+    public function unserialize(mixed $data): void
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        $this->prefix = \unserialize($data);
+        $this->prefix = \unserialize($data, ['allowed_class' => false]);
     }
 
+    /**
+     * @return string[]
+     */
     public function __serialize(): array
     {
         return [$this->prefix];
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function __unserialize(array $data): void
     {
         $this->prefix = $data[0];
     }
-
 }

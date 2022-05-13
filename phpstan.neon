@@ -1,0 +1,5 @@
+parameters:
+  level: 4
+  paths:
+    - /opt/project/src
+    - /opt/project/tests

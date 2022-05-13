@@ -1,28 +1,27 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsValidType.php
- * Class name...: IsValidType.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:00
+ * Last modified: 2022-05-13 22:56:42
+ * Version......: v2
  */
 
 declare(strict_types=1);
 
 namespace iomywiab\iomywiab_php_constraints\constraints\simple;
 
-use iomywiab\iomywiab_php_constraints\Format;
+use iomywiab\iomywiab_php_constraints\formatter\complex\Format;
 
 /**
- * Class IsValidType
- * @package iomywiab\iomywiab_php_constraints\simple
+ * @psalm-immutable
  */
 class IsValidType extends AbstractSimpleConstraint
 {
@@ -38,10 +37,9 @@ class IsValidType extends AbstractSimpleConstraint
     /**
      * @inheritDoc
      */
-    public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
+    public static function isValid(mixed $value, ?string $valueName = null, array &$errors = null): bool
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        if (\is_string($value) && \in_array($value, self::ALL_TYPES)) {
+        if (\is_string($value) && \in_array($value, self::ALL_TYPES, true)) {
             return true;
         }
 

@@ -13,7 +13,7 @@ Another goal was to provide meaningful error messages but still have a good perf
 split functionality: All constraint first check if a value is valid (static methods, no overhead creating objects, but
 complex constraints break common interfaces). A value is considered valid if no check fails. If a single check fails
 then all checks are run to get the all error messages, so in case there is more than one error you will receive all
-error messages. Therefore the performance of checking only should be comparable to Webmozart/Assert, but creating the
+error messages. Therefore, the performance of checking only should be comparable to WebMozart/Assert, but creating the
 error messages is more detailed and therefore probably slower. Since I expect most constraints used in an application to
 be not violated, I accept this slower behaviour in favor of better debug information.
 
@@ -66,7 +66,7 @@ class Example1 {
       header('Location: ' . $url . '?' . $paramName . '&' . $paramPay . '&' . $paramAge); 
       
       // Warning! $name could by null, '', numeric, a 2GB blob, ...
-      // Warning! $monthlyPayment could be null, 0, negativ, boolean, ...
+      // Warning! $monthlyPayment could be null, 0, negative, boolean, ...
       // Warning! $age could be null, 0, negative, a string, ...
       // Warning! $url could have any content, destination not verified
    }
@@ -100,7 +100,7 @@ class Example2 {
 
 ### User-defined constraints, complete
 
-Example follows best practice: 1 contraint for 1 parameter
+Example follows best practice: 1 constraint for 1 parameter
 
 ```php
 use iomywiab\iomywiab_php_constraints\constraints\combined\Constraints;
@@ -144,7 +144,13 @@ class Example3 {
 ### User-defined constraints, complete and shortest
 
 ```php
-use iomywiab\iomywiab_php_constraints\constraints\combined\IsParameters;use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsInRange;use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsStringLengthBetween;use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsStringMaxLength;use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsStringMinLength;use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsType;use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsUrl;
+use iomywiab\iomywiab_php_constraints\constraints\combined\IsParameters;
+use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsInRange;
+use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsStringLengthBetween;
+use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsStringMaxLength;
+use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsStringMinLength;
+use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsType;
+use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsUrl;
 class Example4 {
    public function redirect(/*string*/ $url, /*string*/ $name, /*int*/ $monthlyPayment, /*int*/$age): void {
       IsParameters::assert(
@@ -176,7 +182,13 @@ class Example4 {
 Example shows checking of a JSON structure (maybe as passed via REST post call)
 
 ```php
-use iomywiab\iomywiab_php_constraints\constraints\combined\IsParameters;use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsInRange;use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsStringLengthBetween;use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsStringMaxLength;use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsStringMinLength;use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsType;use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsUrl;
+use iomywiab\iomywiab_php_constraints\constraints\combined\IsParameters;
+use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsInRange;
+use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsStringLengthBetween;
+use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsStringMaxLength;
+use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsStringMinLength;
+use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsType;
+use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsUrl;
 class Example5 {
    public function redirect(/*array*/ $json): void {
       IsParameters::assert(
@@ -200,21 +212,21 @@ class Example5 {
 
 ## Type and Value
 
-PHP differenciates between type and value:
+PHP differentiates between type and value:
 
 * InvalidArgumentException (derived from LogicException) is to be used for invalid types
 * UnexpectedValueException (derived from RunTimeException) is to be used for invalid values
 
-I do not see the benefit of having a differenciation here: If my parameters are wrong, then I do not care why. I care
-for them being correct, which includes type and value. Also I disagree with type errors being derived from
+I do not see the benefit of having a differentiation here: If my parameters are wrong, then I do not care why. I care
+for them being correct, which includes type and value. Also, I disagree with type errors being derived from
 LogicException only, as parameters might be specified during runtime from users and those parameters also might have a
-wrong type. Therefore constraints in this package use its own class ConstraintViolationException.
+wrong type. Therefore, constraints in this package use its own class ConstraintViolationException.
 
 ## Checked and Unchecked exceptions
 
 ConstraintViolationException is derived from LogicException. The latter is mostly treated as an unchecked exception.
 Unchecked means there is no need to create @throws tags in PHPDoc and not catching such an exception in your code is not
-marked as errornous in inspections.
+marked as erroneous in inspections.
 
 I decided to go with LogicException as the main purpose of a constraint exception is
 
@@ -238,7 +250,7 @@ public function doSomething($unchecked, $checked1, $checked2): void {
       throw new Exception('checked1 must not be empty');
    }
 
-   // example for an checked constraint: direct exception conversion
+   // example for a checked constraint: direct exception conversion
    try {
       IsStringNotEmpty::assert($checked2);
    } catch (Exception $cause) {
@@ -258,11 +270,11 @@ public function doSomething($unchecked, $checked1, $checked2): void {
 ### Checking Invariants
 
 Faulty invariants are programming errors. Here constraints behave like asserts: they will lead to an exception, but do
-not have to be catched (although it is recommended in many cases).
+not have to be caught (although it is recommended in many cases).
 
 ## Best Practices
 
-Allways check all parameters that is
+Always check all parameters that is
 
 * function / method parameters
 * REST parameters

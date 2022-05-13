@@ -1,64 +1,53 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsStringNotEmptyOrNullTest.php
- * Class name...: IsStringNotEmptyOrNullTest.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:34
+ * Last modified: 2022-05-06 14:17:32
+ * Version......: v2
  */
+
+/** @noinspection RedundantSuppression */
 
 declare(strict_types=1);
 
 namespace iomywiab\iomywiab_php_constraints_tests\simple;
 
-use Exception;
 use iomywiab\iomywiab_php_constraints\constraints\simple\IsStringNotEmptyOrNull;
-use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
-use iomywiab\iomywiab_php_constraints_tests\ConstraintTestCase;
-use PHPUnit\Framework\ExpectationFailedException;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use iomywiab\iomywiab_php_constraints_testtools\ConstraintTestCase;
+use iomywiab\iomywiab_php_constraints_testtools\StandardTestValues;
+use iomywiab\iomywiab_php_constraints_testtools\TestValues;
 
 /**
- * Class IsNullOrStringTest
- * @package iomywiab\iomywiab_php_constraints_tests
  */
 class IsStringNotEmptyOrNullTest extends ConstraintTestCase
 {
     /**
-     * @throws ExpectationFailedException
-     * @throws InvalidArgumentException
-     * @throws ConstraintViolationException
+     * @param mixed       $name
+     * @param array       $data
+     * @param mixed $dataName
+     * @noinspection PhpFullyQualifiedNameUsageInspection
      */
-    public function testIsValid(): void
-    {
-        $this->checkConstraint(
-            new IsStringNotEmptyOrNull(),
-            ['abc', 'true', 'false', '-1', '0', '1', null],
-            []
-        );
-    }
-
-    /**
-     * @throws ConstraintViolationException
-     * @throws Exception
-     */
-    public function testAssert(): void
-    {
-        self::expectException(ConstraintViolationException::class);
-        try {
-            IsStringNotEmptyOrNull::assert(null);
-            IsStringNotEmptyOrNull::assert('1');
-            IsStringNotEmptyOrNull::assert('a');
-        } catch (Exception $cause) {
-            throw new Exception('Unexpected exception', 0, $cause);
+    public function __construct(
+        mixed $name = null,
+        array $data = [],
+        mixed $dataName = ''
+    ) {
+        $validSamples = StandardTestValues::get(StandardTestValues::STRINGS);
+        $pos = \array_search('', $validSamples, true);
+        if (false !== $pos) {
+            unset($validSamples[$pos]);
         }
-        IsStringNotEmptyOrNull::assert('');
+        $validSamples[] = null;
+        $testValues = new TestValues($validSamples, []);
+
+        parent::__construct(new IsStringNotEmptyOrNull(), $testValues, false, $name, $data, $dataName);
     }
 }

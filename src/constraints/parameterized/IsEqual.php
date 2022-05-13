@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsEqual.php
- * Class name...: IsEqual.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:00
+ * Last modified: 2022-05-13 22:56:41
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -20,43 +20,33 @@ namespace iomywiab\iomywiab_php_constraints\constraints\parameterized;
 
 use iomywiab\iomywiab_php_constraints\AbstractConstraint;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
-use iomywiab\iomywiab_php_constraints\Format;
+use iomywiab\iomywiab_php_constraints\formatter\complex\Format;
 
 /**
- * Class maximum
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 class IsEqual extends AbstractConstraint
 {
     public const DEFAULT_STRICT = true;
 
     /**
-     * @var mixed
-     */
-    private $expected;
-
-    /**
-     * @var bool
-     */
-    private $strict;
-
-    /**
      * Maximum constructor.
      * @param mixed $expected
      * @param bool  $strict
      */
-    public function __construct($expected, bool $strict = self::DEFAULT_STRICT)
-    {
-        $this->expected = $expected;
-        $this->strict = $strict;
+    public function __construct(
+        private /*readonly (but serializable)*/ mixed $expected,
+        private /*readonly (but serializable)*/ ?bool $strict = null
+    ) {
+        // no code
     }
 
     /**
      * @inheritDoc
      */
-    public function isValidValue($value, ?string $valueName = null, array &$errors = null): bool
+    public function isValidValue(mixed $value, ?string $valueName = null, array &$errors = null): bool
     {
-        return static::isValid($this->expected, $value, $valueName, $this->strict, $errors);
+        return static::isValid($this->expected, $value, $this->strict, $valueName, $errors);
     }
 
     /**
@@ -64,24 +54,29 @@ class IsEqual extends AbstractConstraint
      * @param mixed       $actual
      * @param string|null $valueName
      * @param bool        $strict
-     * @param array|null  $errors
+     * @param array<int,string>|null  $errors
      * @return bool
      */
     public static function isValid(
-        $expected,
-        $actual,
+        mixed $expected,
+        mixed $actual,
+        bool $strict = null,
         ?string $valueName = null,
-        bool $strict = self::DEFAULT_STRICT,
         array &$errors = null
     ): bool {
+        $strict = $strict ?? self::DEFAULT_STRICT;
+
         if ($strict && ($expected === $actual)) {
             return true;
-        } elseif (!$strict && ($expected == $actual)) {
+        }
+
+        /** @noinspection TypeUnsafeComparisonInspection */
+        if (!$strict && ($expected == $actual)) {
             return true;
         }
 
         if (null !== $errors) {
-            $expected = Format::toDescription($expected);
+            $expected = Format::toDebugString($expected);
             $format = 'Expected value [%s] is not equal to actual';
             $errors[] = self::toErrorMessage($actual, $valueName, $format, $expected);
         }
@@ -91,9 +86,9 @@ class IsEqual extends AbstractConstraint
     /**
      * @inheritDoc
      */
-    public function assertValue($value, ?string $valueName = null, ?string $message = null): void
+    public function assertValue(mixed $value, ?string $valueName = null, ?string $message = null): void
     {
-        static::assert($this->expected, $value, $valueName, $this->strict, $message);
+        static::assert($this->expected, $value, $this->strict, $valueName, $message);
     }
 
     /**
@@ -105,14 +100,14 @@ class IsEqual extends AbstractConstraint
      * @throws ConstraintViolationException
      */
     public static function assert(
-        $expected,
-        $actual,
+        mixed $expected,
+        mixed $actual,
+        bool $strict = null,
         ?string $valueName = null,
-        bool $strict = self::DEFAULT_STRICT,
         ?string $message = null
     ): void {
         $errors = [];
-        if (!static::isValid($expected, $actual, $valueName, $strict, $errors)) {
+        if (!static::isValid($expected, $actual, $strict, $valueName, $errors)) {
             throw new ConstraintViolationException(static::class, $actual, $valueName, $errors, $message);
         }
     }
@@ -122,26 +117,31 @@ class IsEqual extends AbstractConstraint
      */
     public function serialize(): string
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         return \serialize([$this->expected, $this->strict]);
     }
 
     /**
      * @inheritDoc
      */
-    public function unserialize($data)
+    public function unserialize(mixed $data): void
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        $array = \unserialize($data);
+        $array = \unserialize($data, ['allowed_class' => false]);
         $this->expected = $array[0];
         $this->strict = $array[1];
     }
 
+    /**
+     * @return array
+     */
     public function __serialize(): array
     {
         return [$this->expected, $this->strict];
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function __unserialize(array $data): void
     {
         $this->expected = $data[0];

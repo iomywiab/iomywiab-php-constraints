@@ -1,70 +1,51 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsInArrayOrNullTest.php
- * Class name...: IsInArrayOrNullTest.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:34
+ * Last modified: 2022-05-05 23:31:19
+ * Version......: v2
  */
 
 declare(strict_types=1);
 
 namespace iomywiab\iomywiab_php_constraints_tests\parameterized;
 
-use Exception;
 use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsInArrayOrNull;
-use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
-use iomywiab\iomywiab_php_constraints_tests\ConstraintTestCase;
-use PHPUnit\Framework\ExpectationFailedException;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use iomywiab\iomywiab_php_constraints_testtools\ConstraintTestCase;
+use iomywiab\iomywiab_php_constraints_testtools\TestValues;
 
 /**
- * Class IsInArrayTest
- * @package iomywiab\iomywiab_php_constraints_tests
  */
 class IsInArrayOrNullTest extends ConstraintTestCase
 {
-
     /**
-     * @throws ExpectationFailedException
-     * @throws InvalidArgumentException
-     * @throws ConstraintViolationException
+     * @param mixed $name
+     * @param array $data
+     * @param mixed $dataName
      */
-    public function testIsValid(): void
-    {
-        $this->checkConstraint(
+    public function __construct(
+        mixed $name = null,
+        array $data = [],
+        mixed $dataName = ''
+    ) {
+        $validSamples = [1, true, 'a', 'b', 'c', [1, 2], null];
+        $testValues = new TestValues($validSamples, ['d', 5]);
+
+        parent::__construct(
             new IsInArrayOrNull(['a', 'b', 'c', 1, true, [1, 2]]),
-            [1, true, 'a', 'b', 'c', [1, 2], null],
-            ['d', 5]
+            $testValues,
+            false,
+            $name,
+            $data,
+            $dataName
         );
-    }
-
-    /**
-     * @throws ConstraintViolationException
-     * @throws Exception
-     */
-    public function testAssert(): void
-    {
-        self::expectException(ConstraintViolationException::class);
-        $array = ['a', 'b', 'c', 1, true, [1, 2]];
-        try {
-            IsInArrayOrNull::assert($array, 'a');
-            IsInArrayOrNull::assert($array, 'b');
-            IsInArrayOrNull::assert($array, 'c');
-            IsInArrayOrNull::assert($array, 1, null, true);
-            IsInArrayOrNull::assert($array, '1', null, false);
-            IsInArrayOrNull::assert($array, true);
-            IsInArrayOrNull::assert($array, [1, 2]);
-        } catch (Exception $cause) {
-            throw new Exception('Unexpected exception', 0, $cause);
-        }
-        IsInArrayOrNull::assert($array, 'x');
     }
 }

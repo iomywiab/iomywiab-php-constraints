@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsNotEmpty.php
- * Class name...: IsNotEmpty.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:00
+ * Last modified: 2022-05-13 22:56:41
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -19,17 +19,24 @@ declare(strict_types=1);
 namespace iomywiab\iomywiab_php_constraints\constraints\simple;
 
 /**
- * Class NotEmpty
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 class IsNotEmpty extends AbstractSimpleConstraint
 {
     /**
      * @inheritDoc
      */
-    public static function isValid($value, ?string $valueName = null, array &$errors = null): bool
+    public static function isValid(mixed $value, ?string $valueName = null, array &$errors = null): bool
     {
-        if (!empty($value)) {
+        if (
+            null !== $value
+            && '' !== $value
+            && [] !== $value
+            && false !== $value
+            && 0 !== $value
+            && 0.0 !== $value
+            && '0' !== $value
+        ) {
             return true;
         }
 
@@ -38,5 +45,4 @@ class IsNotEmpty extends AbstractSimpleConstraint
         }
         return false;
     }
-
 }

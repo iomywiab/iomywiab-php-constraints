@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: Constraints.php
- * Class name...: Constraints.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:00
+ * Last modified: 2022-05-13 22:56:42
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -28,13 +28,11 @@ use iomywiab\iomywiab_php_constraints\constraints\parameterized\IsType;
 use iomywiab\iomywiab_php_constraints\constraints\simple\IsNotEmpty;
 use iomywiab\iomywiab_php_constraints\constraints\simple\IsNotNull;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
-use iomywiab\iomywiab_php_constraints\interfaces\ConstraintContainerInterface;
 
 /**
- * Class Constraints
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
-class Constraints extends AbstractConstraintContainer implements ConstraintContainerInterface
+class Constraints extends AbstractConstraintContainer
 {
     public const IDX_NOT_EMPTY = -1;
     public const IDX_NOT_NULL = -2;
@@ -47,11 +45,11 @@ class Constraints extends AbstractConstraintContainer implements ConstraintConta
     public const IDX_IN_ARRAY = -9;
 
     /**
-     * @param int|float $maximum
+     * @param float|int $maximum
      * @return Constraints
      * @throws ConstraintViolationException
      */
-    public function setMaximum($maximum): Constraints
+    public function setMaximum(int|float $maximum): Constraints
     {
         $this->constraints[self::IDX_MAX] = new IsLessOrEqual($maximum);
         return $this;
@@ -69,11 +67,11 @@ class Constraints extends AbstractConstraintContainer implements ConstraintConta
     }
 
     /**
-     * @param int|float $minimum
+     * @param float|int $minimum
      * @return Constraints
      * @throws ConstraintViolationException
      */
-    public function setMinimum($minimum): Constraints
+    public function setMinimum(int|float $minimum): Constraints
     {
         $this->constraints[self::IDX_MIN] = new IsGreaterOrEqual($minimum);
         return $this;
@@ -140,5 +138,4 @@ class Constraints extends AbstractConstraintContainer implements ConstraintConta
         $this->constraints[self::IDX_IN_ARRAY] = new IsInArray($array);
         return $this;
     }
-
 }

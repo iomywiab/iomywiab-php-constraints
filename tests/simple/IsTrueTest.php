@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsTrueTest.php
- * Class name...: IsTrueTest.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:34
+ * Last modified: 2022-05-13 20:10:51
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -19,36 +19,31 @@ declare(strict_types=1);
 namespace iomywiab\iomywiab_php_constraints_tests\simple;
 
 use iomywiab\iomywiab_php_constraints\constraints\simple\IsTrue;
-use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
-use iomywiab\iomywiab_php_constraints_tests\ConstraintTestCase;
-use PHPUnit\Framework\ExpectationFailedException;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use iomywiab\iomywiab_php_constraints_testtools\ConstraintTestCase;
+use iomywiab\iomywiab_php_constraints_testtools\TestValues;
 
 /**
- * Class DomainTest
- * @package iomywiab\iomywiab_php_constraints_tests
  */
 class IsTrueTest extends ConstraintTestCase
 {
-
     /**
-     * @throws ExpectationFailedException
-     * @throws InvalidArgumentException
-     * @throws ConstraintViolationException
+     * @param mixed $name
+     * @param array $data
+     * @param mixed $dataName
      */
-    public function testIsValid(): void
-    {
+    public function __construct(
+        mixed $name = null,
+        array $data = [],
+        mixed $dataName = ''
+    ) {
         /** @noinspection PhpExpressionWithSameOperandsInspection */
-        $this->checkConstraint(
-            new IsTrue(),
+        /** @noinspection SuspiciousBinaryOperationInspection */
+        /** @noinspection TypeUnsafeComparisonInspection */
+        $testValues = new TestValues(
             [true, (1 == 1), (1 === 1), (1 != 2), (1 !== 2)],
             [false, (1 != 1), (1 !== 1), (1 == 2), (1 === 2)]
         );
 
-        IsTrue::assert(true);
-
-        self::expectException(ConstraintViolationException::class);
-        IsTrue::assert(false);
+        parent::__construct(new IsTrue(), $testValues, false, $name, $data, $dataName);
     }
-
 }

@@ -1,17 +1,17 @@
 <?php
+
 /*
  * This file is part of the iomywiab-php-constraints package.
  *
- * Copyright (c) 2012-2021 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
+ * Copyright (c) 2012-2022 Patrick Nehls <iomywiab@premium-postfach.de>, Tornesch, Germany.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * File name....: IsBoolString.php
- * Class name...: IsBoolString.php
  * Project name.: iomywiab-php-constraints
- * Module name..: iomywiab-php-constraints
- * Last modified: 2021-10-20 18:30:00
+ * Last modified: 2022-05-13 22:56:42
+ * Version......: v2
  */
 
 declare(strict_types=1);
@@ -19,19 +19,18 @@ declare(strict_types=1);
 namespace iomywiab\iomywiab_php_constraints\constraints\parameterized;
 
 use iomywiab\iomywiab_php_constraints\AbstractConstraint;
-use iomywiab\iomywiab_php_constraints\constraints\simple\IsArraySameTypeItems;
+use iomywiab\iomywiab_php_constraints\constraints\simple\IsArraySameTypeItemsOrNull;
 use iomywiab\iomywiab_php_constraints\exceptions\ConstraintViolationException;
-use iomywiab\iomywiab_php_constraints\Format;
+use iomywiab\iomywiab_php_constraints\formatter\complex\Format;
 
 /**
- * Class StandardBoolString
- * @package iomywiab\iomywiab_php_constraints
+ * @psalm-immutable
  */
 class IsBoolString extends AbstractConstraint
 {
     public const DEFAULT_BOOLEAN_STRINGS = [
-        Format::TRUE_STRING => true,
-        Format::FALSE_STRING => false,
+        'true' => true,
+        'false' => false,
 
         '1' => true,
         '0' => false,
@@ -56,48 +55,39 @@ class IsBoolString extends AbstractConstraint
     ];
 
     /**
-     * @var bool[]  name(string) => bool
-     */
-    private $lowercaseStrings;
-
-    /**
      * Instance constructor.
-     * @param string[]|null $lowercaseStrings
+     * @param array<string,bool>|null $lowercaseStrings name(string) => bool
      * @throws ConstraintViolationException
      */
-    public function __construct(?array $lowercaseStrings = self::DEFAULT_BOOLEAN_STRINGS)
+    public function __construct(private /*readonly (but serializable)*/ ?array $lowercaseStrings = null)
     {
-        if (null === $lowercaseStrings) {
-            $this->lowercaseStrings = self::DEFAULT_BOOLEAN_STRINGS;
-        } else {
-            IsArraySameTypeItems::assert($lowercaseStrings);
-            $this->lowercaseStrings = $lowercaseStrings;
-        }
+        IsArraySameTypeItemsOrNull::assert($lowercaseStrings);
     }
 
     /**
      * @inheritDoc
      */
-    public function isValidValue($value, ?string $valueName = null, array &$errors = null): bool
+    public function isValidValue(mixed $value, ?string $valueName = null, array &$errors = null): bool
     {
-        return static::isValid($value, $valueName, $this->lowercaseStrings, $errors);
+        return static::isValid($value, $this->lowercaseStrings, $valueName, $errors);
     }
 
     /**
-     * @param array       $lowercaseStrings
-     * @param             $value
-     * @param string|null $valueName
-     * @param array|null  $errors
+     * @param mixed                   $value
+     * @param array<string,bool>|null $lowercaseStrings
+     * @param string|null             $valueName
+     * @param array<int,string>|null  $errors
      * @return bool
      */
     public static function isValid(
-        $value,
+        mixed $value,
+        ?array $lowercaseStrings = null,
         ?string $valueName = null,
-        array $lowercaseStrings = self::DEFAULT_BOOLEAN_STRINGS,
         array &$errors = null
     ): bool {
+        $lowercaseStrings = $lowercaseStrings ?? self::DEFAULT_BOOLEAN_STRINGS;
+
 //        if (is_string($value) && array_key_exists($value, $lowercaseStrings)) {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         if (\is_string($value) && isset($lowercaseStrings[$value])) {
             return true;
         }
@@ -117,26 +107,26 @@ class IsBoolString extends AbstractConstraint
     /**
      * @inheritDoc
      */
-    public function assertValue($value, ?string $valueName = null, ?string $message = null): void
+    public function assertValue(mixed $value, ?string $valueName = null, ?string $message = null): void
     {
-        static::assert($value, $valueName, $this->lowercaseStrings, $message);
+        static::assert($value, $this->lowercaseStrings, $valueName, $message);
     }
 
     /**
-     * @param array       $lowercaseStrings
-     * @param             $value
-     * @param string|null $valueName
-     * @param string|null $message
+     * @param mixed                   $value
+     * @param array<string,bool>|null $lowercaseStrings
+     * @param string|null             $valueName
+     * @param string|null             $message
      * @throws ConstraintViolationException
      */
     public static function assert(
-        $value,
+        mixed $value,
+        ?array $lowercaseStrings = null,
         ?string $valueName = null,
-        array $lowercaseStrings = self::DEFAULT_BOOLEAN_STRINGS,
         ?string $message = null
     ): void {
         $errors = [];
-        if (!static::isValid($value, $valueName, $lowercaseStrings, $errors)) {
+        if (!static::isValid($value, $lowercaseStrings, $valueName, $errors)) {
             throw new ConstraintViolationException(static::class, $value, $valueName, $errors, $message);
         }
     }
@@ -146,27 +136,31 @@ class IsBoolString extends AbstractConstraint
      */
     public function serialize(): string
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
         return \serialize($this->lowercaseStrings);
     }
 
     /**
      * @inheritDoc
      */
-    public function unserialize($data)
+    public function unserialize(mixed $data): void
     {
-        /** @noinspection PhpFullyQualifiedNameUsageInspection */
-        $this->lowercaseStrings = \unserialize($data);
+        $this->lowercaseStrings = \unserialize($data, ['allowed_class' => false]);
     }
 
+    /**
+     * @return array
+     */
     public function __serialize(): array
     {
         return [$this->lowercaseStrings];
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function __unserialize(array $data): void
     {
         $this->lowercaseStrings = $data[0];
     }
-
 }
